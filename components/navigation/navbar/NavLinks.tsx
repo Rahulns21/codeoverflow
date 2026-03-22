@@ -18,36 +18,54 @@ const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
           (pathname.includes(item.route) && item.route.length > 1) ||
           pathname === item.route;
 
-          if (item.route === "/profile") {
-            if (userId) item.route = `${item.route}/${userId}`;
-            else return null;
-          }
+        const route =
+          item.route === "/profile"
+            ? userId
+              ? `${item.route}/${userId}`
+              : null
+            : item.route;
+
+        if (!route) return null;
 
         const LinkComponent = (
-            <Link href={item.route} key={item.label} className={cn
-                (isActive ? 'primary-gradient rounded-lg text-light-900' : 'text-dark300_light900',
-                'flex items-center justify-start gap-4 bg-transparent p-4'
-                )}>
-                <Image
-                  src={item.imgURL}
-                  alt={item.label}
-                  width={20}
-                  height={20}
-                  className={cn({ "invert-colors": !isActive })}
-                />
-                <p className={cn(
-                    isActive ? "base-bold" : "base-medium",
-                    !isMobileNav && "max-lg:hidden"
-                )}>{item.label}</p>
-            </Link>
+          <Link
+            href={route}
+            key={item.label}
+            className={cn(
+              isActive
+                ? "primary-gradient rounded-lg text-light-900"
+                : "text-dark300_light900",
+              "flex items-center gap-4 p-4"
+            )}
+          >
+
+            <Image
+              src={item.imgURL}
+              alt={item.label}
+              width={20}
+              height={20}
+              className={cn(
+                { "invert-colors": !isActive },
+              )}
+            />
+
+            <p
+              className={cn(
+                isActive ? "base-bold" : "base-medium",
+                !isMobileNav && "max-lg:hidden"
+              )}
+            >
+              {item.label}
+            </p>
+          </Link>
         );
 
         return isMobileNav ? (
-            <SheetClose asChild key={item.route}>
-                {LinkComponent}
-            </SheetClose>
+          <SheetClose asChild key={route}>
+            {LinkComponent}
+          </SheetClose>
         ) : (
-            <React.Fragment key={item.route}>{LinkComponent}</React.Fragment>
+          <React.Fragment key={route}>{LinkComponent}</React.Fragment>
         );
       })}
     </>
