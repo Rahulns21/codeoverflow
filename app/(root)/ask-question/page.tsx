@@ -2,7 +2,7 @@ import React from 'react'
 
 const AskAQuestion = () => {
   return (
-    <div>AskAQuestion</div>
+    <div>Ask a question</div>
   )
 }
 
