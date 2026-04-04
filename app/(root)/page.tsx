@@ -1,3 +1,4 @@
+import HomeFilter from "@/components/filters/HomeFilter";
 import SearchIcon from "@/components/icons/SearchIcon";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
@@ -21,9 +22,9 @@ const questions = [
     { _id: "2", title: "Is typescript better than javascript?",
       description: "Can anyone explain me why typescript is better than javascript",
       tags: [
-        { _id: "1", name: "React" },
-        { _id: "2", name: "JavaScript" },
-        { _id: "3", name: "TypeScript" }
+        { _id: "1", name: "JavaScript" },
+        { _id: "2", name: "TypeScript" },
+        { _id: "3", name: "Node" }
       ],
       author: { _id: "2", name: "" },
       upvotes: 10,
@@ -51,11 +52,23 @@ interface SearchParams {
 }
 
 const Home = async ({ searchParams }: SearchParams) => {
-  const { query = "" } = await searchParams;
+  const { query = "", filter = "" } = await searchParams;
+  const normalizedQuery = query.toLowerCase();
+  const normalizedFilter = filter.toLowerCase();
 
-  const filteredQuestions = questions.filter((question) => (
-    question.title.toLowerCase().includes(query?.toLowerCase())
-  ));
+  const filteredQuestions = questions.filter((question) => {
+    const titleMatches = question.title
+      .toLowerCase()
+      .includes(normalizedQuery);
+
+    const filterMatches = 
+      !normalizedFilter ||
+      question.tags.some(
+        (tag) => tag.name.toLowerCase() === normalizedFilter
+      );
+
+    return titleMatches && filterMatches;
+  });
 
   return (
     <>
@@ -73,7 +86,7 @@ const Home = async ({ searchParams }: SearchParams) => {
       <section className="mt-11 max-w-4xl mx-auto">
         <LocalSearch icon={<SearchIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />} />
       </section>
-      {/* HomeFilter */}
+      <HomeFilter />
 
       <div className="mt-10 flex w-full flex-col gap-6">
         {filteredQuestions.map((question) => (
