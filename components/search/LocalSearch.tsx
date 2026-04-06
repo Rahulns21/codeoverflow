@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/url";
 
 interface LocalSearchProp {
@@ -20,8 +20,11 @@ const LocalSearch = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("query") || "";
+  const pathname = usePathname();
 
   const [searchQuery, setSearchQuery] = useState(query);
+
+  const searchParamsString = searchParams.toString();
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -29,20 +32,26 @@ const LocalSearch = ({
 
       const newUrl = trimmedQuery
         ? formUrlQuery({
-            params: searchParams.toString(),
+            params: searchParamsString,
             key: "query",
             value: trimmedQuery,
           })
         : removeKeysFromQuery({
-            params: searchParams.toString(),
+            params: searchParamsString,
             keysToRemove: ["query"],
           });
 
-      router.replace(newUrl, { scroll: false });
+      const currentUrl = searchParamsString
+        ? `${pathname}?${searchParamsString}`
+        : pathname;
+
+      if (newUrl !== currentUrl) {
+        router.replace(newUrl, { scroll: false });
+      }
     }, 400);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, searchParams, router]);
+  }, [searchQuery, searchParamsString, pathname, router]);
 
   return (
     <div
@@ -55,8 +64,7 @@ const LocalSearch = ({
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder={placeholder}
-        className="paragraph-regular no-focus bg-light-800 border-none text-black shadow-none 
-        placeholder:text-gray-500 dark:bg-transparent dark:text-white dark:placeholder:text-gray-400"
+        className="paragraph-regular no-focus bg-light-800 border-none text-black shadow-none placeholder:text-gray-500 dark:bg-transparent dark:text-white dark:placeholder:text-gray-400"
       />
     </div>
   );

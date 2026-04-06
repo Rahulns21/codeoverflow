@@ -1,3 +1,4 @@
+import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilter from "@/components/filters/HomeFilter";
 import SearchIcon from "@/components/icons/SearchIcon";
 import LocalSearch from "@/components/search/LocalSearch";
@@ -13,11 +14,11 @@ const questions = [
         { _id: "2", name: "JavaScript" },
         { _id: "3", name: "TypeScript" }
       ],
-      author: { _id: "1", name: "John Doe" },
+      author: { _id: "1", name: "John Doe", image: "/icons/default-profile.svg"  },
       upvotes: 10,
       answers: 5,
       views: 100,
-      createdAt: new Date(),
+      createdAt: new Date("2021-09-21"),
     },
     { _id: "2", title: "Is typescript better than javascript?",
       description: "Can anyone explain me why typescript is better than javascript",
@@ -26,11 +27,11 @@ const questions = [
         { _id: "2", name: "TypeScript" },
         { _id: "3", name: "Node" }
       ],
-      author: { _id: "2", name: "" },
+      author: { _id: "2", name: "Tim", image: "/icons/default-profile.svg" },
       upvotes: 10,
       answers: 5,
       views: 100,
-      createdAt: new Date(),
+      createdAt: new Date("2019-08-21"),
     },
     { _id: "3", title: "What db should i use?",
       description: "I want to learn React, can anyone help me?",
@@ -39,7 +40,7 @@ const questions = [
         { _id: "2", name: "MySql" },
         { _id: "3", name: "MongoDB" }
       ],
-      author: { _id: "3", name: "Rahul NS" },
+      author: { _id: "3", name: "Rahul NS", image: "/icons/default-profile.svg" },
       upvotes: 10,
       answers: 5,
       views: 100,
@@ -90,7 +91,7 @@ const Home = async ({ searchParams }: SearchParams) => {
 
       <div className="mt-10 flex w-full flex-col gap-6">
         {filteredQuestions.map((question) => (
-          <h1 key={question._id}>{question.title}</h1>
+          <QuestionCard key={question._id} question={question} />
         ))}
       </div>
     </>
