@@ -2,14 +2,21 @@
 
 import { AskQuestion } from '@/lib/validations';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react'
-import { FormProvider, useForm } from 'react-hook-form';
+import React, { useRef } from 'react'
+import { FormProvider, useController, useForm } from 'react-hook-form';
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Button } from '../ui/button';
+import { MDXEditorMethods } from '@mdxeditor/editor';
+import dynamic from 'next/dynamic';
 
+const Editor = dynamic(() => import("@/components/editor"), {
+    ssr: false,
+});
 
 const QuestionForm = () => {
+    const editorRef = useRef<MDXEditorMethods>(null);
+
     const form = useForm({
         resolver: zodResolver(AskQuestion),
         defaultValues: {
@@ -17,6 +24,11 @@ const QuestionForm = () => {
             content: "",
             tags: [],
         },
+    });
+
+    const { field: contentField } = useController({
+        name: "content",
+        control: form.control,
     });
 
     const handleCreateQuestion = () => {};
@@ -49,7 +61,7 @@ const QuestionForm = () => {
           </FieldLabel>
 
           {/* Your editor goes here */}
-
+          <Editor value={contentField.value} fieldChange={contentField.onChange} editorRef={editorRef} />
 
           <FieldDescription className="body-regular mt-2.5 text-light-500">
             Introduce the problem and expand on what you&apos;ve put in the title.
