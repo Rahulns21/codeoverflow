@@ -56,7 +56,7 @@ const Editor = ({
         key={resolvedTheme}
         markdown={value}
         ref={editorRef}
-        className='background-light800_dark200 light-border-2
+        className='background-light800_dark200 light-border-2 grid
         markdown-editor dark-editor w-full border rounded-lg focus:outline-none'
         onChange={fieldChange}
         plugins={[

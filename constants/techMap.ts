@@ -33,6 +33,10 @@ export const techMap: { [key: string]: string } = {
   // Java
   java: "devicon-java-plain",
 
+  // C
+  c: "devicon-c-plain",
+  cprogramming: "devicon-c-plain",
+
   // C++
   "c++": "devicon-cplusplus-plain",
   cpp: "devicon-cplusplus-plain",

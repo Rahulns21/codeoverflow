@@ -10,7 +10,7 @@ export const getDeviconClassName = (techname: string) => {
   const normalizedTechName = techname.replace(/[.]/g, "").toLocaleLowerCase();
 
   return techMap[normalizedTechName] ? `${techMap[normalizedTechName]} 
-  colored` : "devicon-javascript-plain colored";
+  colored` : "devicon-htmx-plain";
 }
 
 export const getTimeStamp = (date: Date) => {
