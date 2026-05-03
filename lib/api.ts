@@ -1,13 +1,26 @@
 import { IUser } from "@/database/user.model";
 import { fetchHandler } from "./handlers/fetch";
 import { IAccount } from "@/database/account.model";
+import { SignInWithOAuthParams } from "@/app/types/action";
+import ROUTES from "@/constants/route";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api";
-const API_USERS_URL = `${API_BASE_URL}/users`
+const API_USERS_URL = `${API_BASE_URL}/users`;
 const API_ACCOUNTS_URL = `${API_BASE_URL}/accounts`;
 
 export const api = {
+  auth: {
+    oAuthSignIn: ({
+      user,
+      provider,
+      providerAccountId,
+    }: SignInWithOAuthParams) =>
+      fetchHandler(`${API_BASE_URL}/auth/${ROUTES.SIGN_IN_WITH_OAUTH}`, {
+        method: "POST",
+        body: JSON.stringify({ user, provider, providerAccountId }),
+      }),
+  },
   users: {
     getAll: () => fetchHandler<IUser[]>(`${API_USERS_URL}`),
     getById: (id: string) => fetchHandler<IUser>(`${API_USERS_URL}/${id}`),
@@ -33,7 +46,8 @@ export const api = {
   },
   accounts: {
     getAll: () => fetchHandler<IAccount[]>(`${API_ACCOUNTS_URL}`),
-    getById: (id: string) => fetchHandler<IAccount>(`${API_ACCOUNTS_URL}/${id}`),
+    getById: (id: string) =>
+      fetchHandler<IAccount>(`${API_ACCOUNTS_URL}/${id}`),
     getByProvider: (providerAccountId: string) =>
       fetchHandler<IAccount>(`${API_ACCOUNTS_URL}/provider`, {
         method: "POST",

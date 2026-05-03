@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilter from "@/components/filters/HomeFilter";
 import SearchIcon from "@/components/icons/SearchIcon";
@@ -53,6 +54,9 @@ interface SearchParams {
 }
 
 const Home = async ({ searchParams }: SearchParams) => {
+  const session = await auth();
+
+  console.log(`Session: ${session}`);
   const { query = "", filter = "" } = await searchParams;
   const normalizedQuery = query.toLowerCase();
   const normalizedFilter = filter.toLowerCase();
