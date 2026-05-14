@@ -9,4 +9,11 @@ export interface SignInWithOAuthParams {
         image: string;
         username: string;
     }
-} 
+}
+
+export interface AuthCredentials {
+    name: string;
+    username: string;
+    email: string;
+    password: string;
+}

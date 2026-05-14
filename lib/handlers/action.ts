@@ -9,7 +9,7 @@ import { Session } from "next-auth";
 type ActionOptions<T> = {
     params?: T;
     schema?: ZodSchema<T>;
-    authorize: boolean;
+    authorize?: boolean;
 };
 
 async function action<T>({
