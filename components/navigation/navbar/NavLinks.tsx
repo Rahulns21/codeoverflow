@@ -7,9 +7,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
+const NavLinks = ({
+  isMobileNav = false,
+  userId,
+}: {
+  isMobileNav?: boolean;
+  userId?: string;
+}) => {
   const pathname = usePathname();
-  const userId = 1;
 
   return (
     <>
@@ -33,20 +38,17 @@ const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
             key={item.label}
             className={cn(
               isActive
-                ? "primary-gradient rounded-lg text-light-900"
+                ? "primary-gradient text-light-900 rounded-lg"
                 : "text-dark300_light900",
               "flex items-center gap-4 p-4"
             )}
           >
-
             <Image
               src={item.imgURL}
               alt={item.label}
               width={20}
               height={20}
-              className={cn(
-                { "invert-colors": !isActive },
-              )}
+              className={cn({ "invert-colors": !isActive })}
             />
 
             <p
