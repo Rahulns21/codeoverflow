@@ -12,6 +12,6 @@ const TagQuestionSchema = new Schema<ITagQuestion>({
     question: { type: Schema.Types.ObjectId, ref: "Question", required: true },
 }, { timestamps: true });
 
-const TagQuestion = models?.TagQuestion || model<ITagQuestion>("TagQuestion", TagQuestionSchema);
+const TagQuestion = models?.["Tag-Question"] || model<ITagQuestion>("Tag-Question", TagQuestionSchema);
 
 export default TagQuestion;
