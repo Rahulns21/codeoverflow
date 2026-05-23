@@ -53,10 +53,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
+    authorized({ auth, request }) {
+      const isLoggedIn = !!auth?.user;
+      const { pathname } = request.nextUrl;
+      const authRoutes = ["/signup", "/signin"];
+
+      if (isLoggedIn && authRoutes.includes(pathname)) {
+        return Response.redirect(new URL("/", request.nextUrl));
+      }
+
+      return true;
+    },
+
     async session({ session, token }) {
       session.user.id = token.sub as string;
       return session;
     },
+
     async jwt({ token, account }) {
       if (account) {
         const { data: existingAccount, success } =
@@ -75,6 +88,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return token;
     },
+
     async signIn({ user, profile, account }) {
       if (account?.type === "credentials") return true;
       if (!account || !user) return false;

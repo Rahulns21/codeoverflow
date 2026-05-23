@@ -16,28 +16,37 @@ import { MDXEditorMethods } from "@mdxeditor/editor";
 import dynamic from "next/dynamic";
 import { z } from "zod";
 import TagCard from "../cards/TagCard";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import ROUTES from "@/constants/route";
 import { LoaderCircle } from "lucide-react";
+import { Question } from "@/app/types/global";
 
 const Editor = dynamic(() => import("@/components/editor"), {
   ssr: false,
 });
 
-const QuestionForm = () => {
+interface Params {
+  question?: Question;
+  isEdit?: boolean;
+}
+
+const QuestionForm = ({ question, isEdit = false }: Params) => {
+  const initialValues = {
+    title: question?.title || "",
+    content: question?.content || "",
+    tags: question?.tags.map((tag) => tag.name),
+  }
+
   const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof AskQuestionSchema>>({
     resolver: zodResolver(AskQuestionSchema),
-    defaultValues: {
-      title: "",
-      content: "",
-      tags: [],
-    },
+    mode: "onChange",
+    defaultValues: initialValues,
   });
 
   const { field: contentField } = useController({
@@ -59,7 +68,9 @@ const QuestionForm = () => {
       const tagInput = e.currentTarget.value.trim();
 
       if (tagInput && tagInput.length < 15 && !field.value.includes(tagInput)) {
-        form.setValue("tags", [...field.value, tagInput]);
+        form.setValue("tags", [...field.value, tagInput], {
+          shouldDirty: true,
+        });
         e.currentTarget.value = "";
         form.clearErrors("tags");
       } else if (tagInput.length > 15) {
@@ -78,7 +89,7 @@ const QuestionForm = () => {
 
   const handleTagRemove = (tag: string) => {
     const newTags = tagsField.value.filter((t: string) => t !== tag);
-    form.setValue("tags", newTags);
+    form.setValue("tags", newTags, { shouldDirty: true });
 
     if (newTags.length === 0) {
       form.setError("tags", {
@@ -94,6 +105,25 @@ const QuestionForm = () => {
     data: z.infer<typeof AskQuestionSchema>
   ) => {
     startTransition(async () => {
+      if (isEdit && question) {
+        const result = await editQuestion({
+          questionId: question?._id,
+          ...data,
+        });
+
+        if (result.success) {
+          toast.success("Question updated successfully");
+
+          if (result.data) router.push(ROUTES.QUESTION(result.data._id));
+        } else {
+          toast.error(`Error ${result.status}`, {
+            description: result.error?.message || "Something went wrong",
+          });
+        }
+
+        return;
+      }
+
       const result = await createQuestion(data);
 
       if (result.success) {
@@ -196,15 +226,13 @@ const QuestionForm = () => {
             disabled={isPending}
             className="primary-gradient text-light-900 w-fit cursor-pointer py-5 max-sm:py-4"
           >
-            { isPending ? (
+            {isPending ? (
               <>
                 <LoaderCircle className="mr-2 size-4 animate-spin" />
                 <span>Submitting</span>
               </>
             ) : (
-              <>
-                Ask Question
-              </>
+              <>{isEdit ? "Update" : "Ask a Question"}</>
             )}
           </Button>
         </div>
