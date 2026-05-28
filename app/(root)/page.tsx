@@ -5,99 +5,68 @@ import SearchIcon from "@/components/icons/SearchIcon";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/route";
+import { getQuestions } from "@/lib/actions/question.action";
 import Link from "next/link";
 
-const questions = [
-    { _id: "1", title: "How to learn React?",
-      description: "I want to learn React, can anyone help me?",
-      tags: [
-        { _id: "1", name: "React" },
-        { _id: "2", name: "JavaScript" },
-        { _id: "3", name: "TypeScript" }
-      ],
-      author: { _id: "1", name: "John Doe", image: "/icons/default-profile.svg"  },
-      upvotes: 10,
-      answers: 5,
-      views: 100,
-      createdAt: new Date("2021-09-21"),
-    },
-    { _id: "2", title: "Is typescript better than javascript?",
-      description: "Can anyone explain me why typescript is better than javascript",
-      tags: [
-        { _id: "1", name: "JavaScript" },
-        { _id: "2", name: "TypeScript" },
-        { _id: "3", name: "Node" }
-      ],
-      author: { _id: "2", name: "Tim", image: "/icons/default-profile.svg" },
-      upvotes: 10,
-      answers: 5,
-      views: 100,
-      createdAt: new Date("2019-08-21"),
-    },
-    { _id: "3", title: "What db should i use?",
-      description: "I want to learn React, can anyone help me?",
-      tags: [
-        { _id: "1", name: "Postgresql" },
-        { _id: "2", name: "MySql" },
-        { _id: "3", name: "MongoDB" }
-      ],
-      author: { _id: "3", name: "Rahul NS", image: "/icons/default-profile.svg" },
-      upvotes: 10,
-      answers: 5,
-      views: 100,
-      createdAt: new Date(),
-    }
-];
-
 interface SearchParams {
-  searchParams: Promise<{ [key: string]: string }>
+  searchParams: Promise<{ [key: string]: string }>;
 }
 
 const Home = async ({ searchParams }: SearchParams) => {
   const session = await auth();
 
   console.log(`Session: ${session}`);
-  const { query = "", filter = "" } = await searchParams;
-  const normalizedQuery = query.toLowerCase();
-  const normalizedFilter = filter.toLowerCase();
 
-  const filteredQuestions = questions.filter((question) => {
-    const titleMatches = question.title
-      .toLowerCase()
-      .includes(normalizedQuery);
+  const { page, pageSize, query, filter } = await searchParams;
 
-    const filterMatches = 
-      !normalizedFilter ||
-      question.tags.some(
-        (tag) => tag.name.toLowerCase() === normalizedFilter
-      );
-
-    return titleMatches && filterMatches;
+  const { success, data, error } = await getQuestions({
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+    query: query || "",
+    filter: filter || "",
   });
+
+  const { questions } = data || {};
 
   return (
     <>
-      <section className="flex w-full flex-col-reverse justify-between 
-      gap-4 sm:flex-row sm:items-center">
+      <section className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
         <h1 className="h1-bold text-dark100_light900">All Questions</h1>
 
-        <Button className="primary-gradient min-h-11.5 px-4 py-3 text-light-900" asChild>
-          <Link href={ROUTES.ASK_QUESTION}>
-            Ask a Question
-          </Link>
+        <Button
+          className="primary-gradient text-light-900 min-h-11.5 px-4 py-3"
+          asChild
+        >
+          <Link href={ROUTES.ASK_QUESTION}>Ask a Question</Link>
         </Button>
       </section>
 
-      <section className="mt-11 max-w-4xl mx-auto">
-        <LocalSearch icon={<SearchIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />} />
+      <section className="mx-auto mt-11 max-w-4xl">
+        <LocalSearch
+          icon={
+            <SearchIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+          }
+        />
       </section>
       <HomeFilter />
 
-      <div className="mt-10 flex w-full flex-col gap-6">
-        {filteredQuestions.map((question) => (
-          <QuestionCard key={question._id} question={question} />
-        ))}
-      </div>
+      {success ? (
+        <div className="mt-10 flex w-full flex-col gap-6">
+          {questions && questions.length > 0 ? (
+            questions.map((question) => (
+              <QuestionCard key={question._id} question={question} />
+            ))
+          ) : (
+            <div className="mt-10 flex w-full items-center justify-center">
+              <p className="text-dark400_light700">No questions found</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="mt-10 flex w-full items-center justify-center">
+          <p>{error?.message || "Failed to fetch questions"}</p>
+        </div>
+      )}
     </>
   );
 };

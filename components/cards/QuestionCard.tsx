@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import TagCard from "./TagCard";
 import Metric from "../Metric";
+import { Question, Tag } from "@/app/types/global";
 
 interface Props {
   question: Question;
@@ -38,13 +39,15 @@ const QuestionCard = ({
       </div>
 
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
-        <Metric 
+        <Metric
           imgUrl={author.image}
-          alt={author.name} value={author.name}
+          alt={author.name} 
+          value={author.name}
           title={`• asked ${getTimeStamp(createdAt)}`}
           href={ROUTES.PROFILE(author._id)}
           textStyles="body-medium text-dark400_light700" 
-          isAuthor 
+          isAuthor
+          fallback={author.name.split(' ').map((name) => name.charAt(0)).join('')}
         />
 
         <div className="flex items-center gap-3 

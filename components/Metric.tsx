@@ -11,6 +11,7 @@ interface Props {
     href?: string;
     imgStyles?: string;
     isAuthor?: boolean;
+    fallback?: string;
 }
 
 const Metric = ({
@@ -21,16 +22,23 @@ const Metric = ({
     textStyles,
     href,
     imgStyles,
-    isAuthor
+    isAuthor,
+    fallback
 }: Props) => {
     const metricContent = <>
-        <Image 
-            src={imgUrl} 
-            alt={alt} 
-            width={16} 
-            height={16} 
-            className={`rounded-full object-contain ${imgStyles}`} 
-        />
+        {imgUrl ? (
+            <Image 
+                src={imgUrl} 
+                alt={alt} 
+                width={16} 
+                height={16} 
+                className={`size-5 rounded-full object-contain ${imgStyles}`} 
+            />
+        ) : (
+            <div className="primary-gradient flex-center size-5 rounded-full font-space-grotesk font-bold tracking-wider text-white">
+                <span className="text-light-900 text-xs font-bold">{fallback}</span>
+            </div>
+        )}
 
         <p className={`${textStyles} flex items-center gap-1`}>
             {value}

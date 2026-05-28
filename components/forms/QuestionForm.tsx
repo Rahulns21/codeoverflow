@@ -36,7 +36,7 @@ const QuestionForm = ({ question, isEdit = false }: Params) => {
   const initialValues = {
     title: question?.title || "",
     content: question?.content || "",
-    tags: question?.tags.map((tag) => tag.name),
+    tags: question?.tags.map((tag) => tag.name) || [],
   }
 
   const router = useRouter();
