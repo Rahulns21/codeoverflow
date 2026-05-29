@@ -8,6 +8,7 @@
 
 @theme {
   --color-primary-100: #fff1e6;
+  --color-primary-100-hover: #f0f0f0;
   --color-primary-500: #ff7000;
 
   --color-dark-100: #000000;
