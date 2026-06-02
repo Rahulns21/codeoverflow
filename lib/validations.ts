@@ -65,7 +65,7 @@ export const AskQuestionSchema = z.object({
 });
 
 export const EditQuestionSchema = AskQuestionSchema.extend({
-  questionId: z.string().min(1, { message: "Question ID is required."}),
+  questionId: z.string().min(1, { message: "Question ID is required." }),
 });
 
 export const UserSchema = z.object({
@@ -124,7 +124,7 @@ export const SignInWithOAuthSchema = z.object({
 });
 
 export const GetQuestionSchema = z.object({
-  questionId: z.string().min(1, { message: "Question ID is required." })
+  questionId: z.string().min(1, { message: "Question ID is required." }),
 });
 
 export const PaginatedSearchParamsSchema = z.object({
@@ -133,4 +133,8 @@ export const PaginatedSearchParamsSchema = z.object({
   query: z.string().optional(),
   filter: z.string().optional(),
   sort: z.string().optional(),
+});
+
+export const GetTagQuestionsSchema = PaginatedSearchParamsSchema.extend({
+  tagId: z.string().min(1, { message: "Tag ID is required." }),
 });
