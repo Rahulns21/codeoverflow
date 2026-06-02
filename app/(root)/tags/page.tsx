@@ -47,15 +47,6 @@ const Tags = async ({ searchParams }: RouteParams) => {
           </div>
         )}
       />
-
-      <div className="fixed bottom-0 left-0 z-50 bg-black p-2 text-xs text-white">
-        <span className="sm:hidden">xs (&lt;640px)</span>
-        <span className="hidden sm:inline md:hidden">sm (640px)</span>
-        <span className="hidden md:inline lg:hidden">md (768px)</span>
-        <span className="hidden lg:inline xl:hidden">lg (1024px)</span>
-        <span className="hidden xl:inline 2xl:hidden">xl (1280px)</span>
-        <span className="hidden 2xl:inline">2xl (1536px)</span>
-      </div>
     </>
   );
 };
