@@ -5,9 +5,12 @@ import { Input } from "../ui/input";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/url";
 
+type IconPosition = "left" | "right";
+
 interface LocalSearchProp {
   route?: string;
   icon: React.ReactNode;
+  iconPosition?: IconPosition;
   placeholder?: string;
   otherClasses?: string;
 }
@@ -16,6 +19,7 @@ const LocalSearch = ({
   icon,
   placeholder = "Search...",
   otherClasses,
+  iconPosition = 'left',
 }: LocalSearchProp) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -57,7 +61,7 @@ const LocalSearch = ({
     <div
       className={`bg-light-800 dark:bg-dark-400 flex min-h-14 grow items-center gap-4 rounded-2xl px-5 shadow-sm transition-all ${otherClasses}`}
     >
-      {icon}
+      {iconPosition === "left" && icon}
 
       <Input
         type="text"
@@ -66,6 +70,8 @@ const LocalSearch = ({
         placeholder={placeholder}
         className="paragraph-regular no-focus bg-light-800 border-none text-black shadow-none placeholder:text-gray-500 dark:bg-transparent dark:text-white dark:placeholder:text-gray-400"
       />
+
+      {iconPosition === "right" && icon}
     </div>
   );
 };

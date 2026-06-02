@@ -1,4 +1,5 @@
 import { techMap } from "@/constants/techMap";
+import { techDescriptionMap } from "@/constants/techMapDescription";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -6,11 +7,21 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const getDeviconClassName = (techname: string) => {
-  const normalizedTechName = techname.replace(/[.]/g, "").toLocaleLowerCase();
+export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+
+export const getDeviconClassName = (techName: string) => {
+  const normalizedTechName = techName.replace(/[.]/g, "").toLowerCase();
 
   return techMap[normalizedTechName] ? `${techMap[normalizedTechName]} 
   colored` : "devicon-htmx-plain";
+}
+
+export const getTechDescription = (techName: string) => {
+  const normalizedTechName = techName.replace(/[.]/g, "").toLowerCase();
+
+  return techDescriptionMap[normalizedTechName]
+    ? techDescriptionMap[normalizedTechName]
+    : `${techName} is a technology, framework, library, or tool used in software development, providing valuable features and capabilities.`;
 }
 
 export const getTimeStamp = (createdAt: Date) => {
