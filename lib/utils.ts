@@ -9,6 +9,8 @@ export function cn(...inputs: ClassValue[]) {
 
 export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
+export const initials = (word: string) => word.split(' ').map((word) => word[0]).join("").toUpperCase().slice(0, 2);
+
 export const getDeviconClassName = (techName: string) => {
   const normalizedTechName = techName.replace(/[.]/g, "").toLowerCase();
 
@@ -48,4 +50,17 @@ export const getTimeStamp = (createdAt: Date) => {
     }
   }
   return "just now";
+}
+
+export const formatNumber = (number: number): string => {
+  const thousand: number = 1000;
+  const million: number = 1000000;
+
+  if (number >= million) {
+    return (number / million).toFixed(1) + 'M';
+  } else if (number >= thousand) {
+    return (number / 1000).toFixed(1) + 'K';
+  } else {
+    return number.toString();
+  }
 }

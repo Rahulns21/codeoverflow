@@ -1,7 +1,6 @@
 import ROUTES from "@/constants/route";
-import { getTimeStamp } from "@/lib/utils";
+import { getTimeStamp, initials } from "@/lib/utils";
 import Link from "next/link";
-import React from "react";
 import TagCard from "./TagCard";
 import Metric from "../Metric";
 import { Question, Tag } from "@/app/types/global";
@@ -47,7 +46,8 @@ const QuestionCard = ({
           href={ROUTES.PROFILE(author._id)}
           textStyles="body-medium text-dark400_light700" 
           isAuthor
-          fallback={author.name.split(' ').map((name) => name.charAt(0)).join('')}
+          fallback={initials(author.name)}
+          titleStyles="max-sm:hidden"
         />
 
         <div className="flex items-center gap-3 

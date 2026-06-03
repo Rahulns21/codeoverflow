@@ -218,7 +218,9 @@ export async function getQuestion(
   const { questionId } = validationResult.params!;
 
   try {
-    const question = await Question.findById(questionId).populate("tags");
+    const question = await Question.findById(questionId)
+      .populate("tags")
+      .populate("author", "_id name image");
 
     if (!question) {
       throw new Error("Question not found");
@@ -281,8 +283,8 @@ export async function getQuestions(
     const totalQuestions = await Question.countDocuments(filterQuery);
 
     const questions = await Question.find(filterQuery)
-      .populate('tags', 'name')
-      .populate('author', 'name image')
+      .populate("tags", "name")
+      .populate("author", "name image")
       .lean()
       .sort(sortCriteria)
       .skip(skip)
@@ -293,7 +295,7 @@ export async function getQuestions(
     return {
       success: true,
       data: { questions: JSON.parse(JSON.stringify(questions)), isNext },
-    }
+    };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
