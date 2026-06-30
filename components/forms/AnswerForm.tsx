@@ -7,18 +7,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-react";
 import { Field, FieldError, FieldGroup } from "@/components/ui/field";
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import { AnswerSchema } from "@/lib/validations";
 import dynamic from "next/dynamic";
 import { MDXEditorMethods } from "@mdxeditor/editor";
 import Image from "next/image";
+import { createAnswer } from "@/lib/actions/answer.action";
+import { toast } from "sonner";
 
 const Editor = dynamic(() => import("@/components/editor"), {
   ssr: false,
 });
 
-const AnswerForm = () => {
-  const [isSubmitting] = useState(false);
+const AnswerForm = ({ questionId }: { questionId: string }) => {
+  const [isAnswering, startAnsweringTransition] = useTransition();
   const [isAISubmitting] = useState(false);
 
   const editorRef = useRef<MDXEditorMethods>(null);
@@ -31,7 +33,34 @@ const AnswerForm = () => {
   });
 
   const handleSubmit = async (values: z.infer<typeof AnswerSchema>) => {
-    console.log(values);
+    startAnsweringTransition(async () => {
+      const result = await createAnswer({
+        questionId,
+        content: values.content,
+      });
+
+      console.log("Server action result:", result);
+
+      if (result.success) {
+        form.reset();
+
+        if (editorRef.current) {
+          editorRef.current.setMarkdown('');
+        }
+
+        toast.success("Success", {
+          description: "Your answer has been posted successfully",
+        });
+      } else {
+        toast.error("Error", {
+          description: result.error?.message || "Something went wrong",
+        });
+      }
+    });
+  };
+
+  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    form.handleSubmit(handleSubmit)(e);
   };
 
   return (
@@ -65,7 +94,7 @@ const AnswerForm = () => {
       </div>
 
       <form
-        onSubmit={form.handleSubmit(handleSubmit)}
+        onSubmit={onFormSubmit}
         className="mt-6 flex w-full flex-col gap-10"
       >
         <FieldGroup>
@@ -92,7 +121,7 @@ const AnswerForm = () => {
             type="submit"
             className="primary-gradient w-fit cursor-pointer py-5 text-white"
           >
-            {isSubmitting ? (
+            {isAnswering ? (
               <>
                 <LoaderCircle className="mr-2 size-4 animate-spin" />
                 Posting...

@@ -3,7 +3,7 @@ import { Inter, Space_Grotesk, Geist } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/context/Theme";
 import { cn } from "@/lib/utils";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "sonner";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { ReactNode } from "react";
