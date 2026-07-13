@@ -3,6 +3,7 @@ import { fetchHandler } from "./handlers/fetch";
 import { IAccount } from "@/database/account.model";
 import { SignInWithOAuthParams } from "@/app/types/action";
 import ROUTES from "@/constants/route";
+import { ActionResponse } from "@/app/types/global";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api";
@@ -67,5 +68,11 @@ export const api = {
       fetchHandler<IAccount>(`${API_ACCOUNTS_URL}/${id}`, {
         method: "DELETE",
       }),
+  },
+  ai: {
+    getAnswer: (question: string, content: string): Promise<ActionResponse<string>> => fetchHandler(`${API_BASE_URL}/ai/answers`, {
+      method: 'POST',
+      body: JSON.stringify({question, content}),
+    }),
   },
 };
