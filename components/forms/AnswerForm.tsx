@@ -14,14 +14,23 @@ import { MDXEditorMethods } from "@mdxeditor/editor";
 import Image from "next/image";
 import { createAnswer } from "@/lib/actions/answer.action";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { api } from "@/lib/api";
 
 const Editor = dynamic(() => import("@/components/editor"), {
   ssr: false,
 });
 
-const AnswerForm = ({ questionId }: { questionId: string }) => {
+interface Props {
+  questionId: string;
+  questionTitle: string;
+  questionContent: string;
+}
+
+const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
   const [isAnswering, startAnsweringTransition] = useTransition();
-  const [isAISubmitting] = useState(false);
+  const [isAISubmitting, setIsAISubmitting] = useState(false);
+  const session = useSession();
 
   const editorRef = useRef<MDXEditorMethods>(null);
 
@@ -45,7 +54,7 @@ const AnswerForm = ({ questionId }: { questionId: string }) => {
         form.reset();
 
         if (editorRef.current) {
-          editorRef.current.setMarkdown('');
+          editorRef.current.setMarkdown("");
         }
 
         toast.success("Success", {
@@ -57,6 +66,57 @@ const AnswerForm = ({ questionId }: { questionId: string }) => {
         });
       }
     });
+  };
+
+  const generateAIAnswer = async () => {
+    if (session.status !== "authenticated") {
+      return toast.error("Please log in", {
+        description: "You need to be logged in to use this feature",
+      });
+    }
+
+    setIsAISubmitting(true);
+
+    const userAnswer = editorRef.current?.getMarkdown();
+
+    try {
+      const { success, data, error } = await api.ai.getAnswer(
+        questionTitle,
+        questionContent,
+        userAnswer
+      );
+
+      if (!success) {
+        return toast.error("Error", { description: error?.message });
+      }
+
+      if (!data) {
+        return toast.error("Error", {
+          description: "No response generated. Please try again.",
+        });
+      }
+
+      const formattedAnswer = data.replace(/<br>/g, " ").toString().trim();
+
+      if (editorRef.current) {
+        editorRef.current.setMarkdown(formattedAnswer);
+        form.setValue("content", formattedAnswer);
+        form.trigger("content");
+      }
+
+      toast.success("Success", {
+        description: "AI generated answer has been generated",
+      });
+    } catch (error) {
+      toast.error("Error", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "There was a problem with your request.",
+      });
+    } finally {
+      setIsAISubmitting(false);
+    }
   };
 
   const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -72,6 +132,7 @@ const AnswerForm = ({ questionId }: { questionId: string }) => {
         <Button
           className="btn light-border-2 text-primary-500 dark:text-primary-500 cursor-pointer gap-1.5 rounded-md border px-4 py-2.5 shadow-none"
           disabled={isAISubmitting}
+          onClick={generateAIAnswer}
         >
           {isAISubmitting ? (
             <>
