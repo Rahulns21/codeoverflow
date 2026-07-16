@@ -1,22 +1,31 @@
 import { techMap } from "@/constants/techMap";
 import { techDescriptionMap } from "@/constants/techMapDescription";
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+export const capitalize = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1);
 
-export const initials = (word: string) => word.split(' ').map((word) => word[0]).join("").toUpperCase().slice(0, 2);
+export const initials = (word: string) =>
+  word
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
 export const getDeviconClassName = (techName: string) => {
   const normalizedTechName = techName.replace(/[.]/g, "").toLowerCase();
 
-  return techMap[normalizedTechName] ? `${techMap[normalizedTechName]} 
-  colored` : "devicon-htmx-plain";
-}
+  return techMap[normalizedTechName]
+    ? `${techMap[normalizedTechName]} 
+  colored`
+    : "devicon-htmx-plain";
+};
 
 export const getTechDescription = (techName: string) => {
   const normalizedTechName = techName.replace(/[.]/g, "").toLowerCase();
@@ -24,14 +33,12 @@ export const getTechDescription = (techName: string) => {
   return techDescriptionMap[normalizedTechName]
     ? techDescriptionMap[normalizedTechName]
     : `${techName} is a technology, framework, library, or tool used in software development, providing valuable features and capabilities.`;
-}
+};
 
 export const getTimeStamp = (createdAt: Date) => {
   const date = new Date(createdAt);
   const now = new Date();
-  const secondsAgo = Math.floor(
-    (now.getTime() - date.getTime()) / 1000
-  );
+  const secondsAgo = Math.floor((now.getTime() - date.getTime()) / 1000);
 
   const units = [
     { label: "y", seconds: 31536000 },
@@ -46,21 +53,27 @@ export const getTimeStamp = (createdAt: Date) => {
   for (const unit of units) {
     const interval = Math.floor(secondsAgo / unit.seconds);
     if (interval >= 1) {
-      return `${interval}${unit.label} ago`
+      return `${interval}${unit.label} ago`;
     }
   }
   return "just now";
-}
+};
 
 export const formatNumber = (number: number): string => {
   const thousand: number = 1000;
   const million: number = 1000000;
+  const billion: number = 1000000000;
 
-  if (number >= million) {
-    return (number / million).toFixed(1) + 'M';
+  if (number >= billion) {
+    const value = (number / billion).toFixed(1);
+    return value.endsWith(".0") ? Math.floor(number / billion) + "B" : value + "B";
+  } else if (number >= million) {
+    const value = (number / million).toFixed(1);
+    return value.endsWith(".0") ? Math.floor(number / million) + "M" : value + "M";
   } else if (number >= thousand) {
-    return (number / 1000).toFixed(1) + 'K';
+    const value = (number / thousand).toFixed(1);
+    return value.endsWith(".0") ? Math.floor(number / thousand) + "K" : value + "K";
   } else {
     return number.toString();
   }
-}
+};
