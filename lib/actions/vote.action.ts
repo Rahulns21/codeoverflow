@@ -16,6 +16,8 @@ import {
 import handleError from "../handlers/error";
 import mongoose, { ClientSession } from "mongoose";
 import { Answer, Question, Vote } from "@/database";
+import { revalidatePath } from "next/cache";
+import ROUTES from "@/constants/route";
 
 export async function updateVoteCount(
   params: UpdateVoteCountParams,
@@ -89,10 +91,14 @@ export async function createVote(
           session
         );
       } else {
-        await Vote.findById(
+        await Vote.findByIdAndUpdate(
           existingVote._id,
           { voteType },
           { new: true, session }
+        );
+        await updateVoteCount(
+          { targetId, targetType, voteType: existingVote.voteType, change: -1 },
+          session
         );
         await updateVoteCount(
           { targetId, targetType, voteType, change: 1 },
@@ -100,7 +106,7 @@ export async function createVote(
         );
       }
     } else {
-      await Vote.create([{ targetId, targetType, voteType, change: 1 }], {
+      await Vote.create([{ author: userId, actionId: targetId, actionType: targetType, voteType }], {
         session,
       });
       await updateVoteCount(
@@ -111,6 +117,8 @@ export async function createVote(
 
     await session.commitTransaction();
     session.endSession();
+
+    revalidatePath(ROUTES.QUESTION(targetId));
 
     return { success: true };
   } catch (error) {
@@ -157,8 +165,8 @@ export async function hasVoted(
       data: {
         hasUpvoted: vote.voteType === "upvote",
         hasDownvoted: vote.voteType === "downvote",
-      }
-    }
+      },
+    };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
