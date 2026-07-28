@@ -20,6 +20,7 @@ const LocalSearch = ({
   placeholder = "Search...",
   otherClasses,
   iconPosition = 'left',
+  route
 }: LocalSearchProp) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -34,6 +35,8 @@ const LocalSearch = ({
     const delayDebounceFn = setTimeout(() => {
       const trimmedQuery = searchQuery.trim();
 
+      const basePath = route || pathname;
+
       const newUrl = trimmedQuery
         ? formUrlQuery({
             params: searchParamsString,
@@ -46,8 +49,8 @@ const LocalSearch = ({
           });
 
       const currentUrl = searchParamsString
-        ? `${pathname}?${searchParamsString}`
-        : pathname;
+        ? `${basePath}?${searchParamsString}`
+        : basePath;
 
       if (newUrl !== currentUrl) {
         router.replace(newUrl, { scroll: false });
@@ -55,7 +58,7 @@ const LocalSearch = ({
     }, 400);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, searchParamsString, pathname, router]);
+  }, [searchQuery, searchParamsString, pathname, router, route]);
 
   return (
     <div

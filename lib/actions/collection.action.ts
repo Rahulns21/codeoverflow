@@ -149,7 +149,7 @@ export async function getSavedQuestions(
           as: "question",
         },
       },
-      { $unwind: "question" },
+      { $unwind: "$question" },
       {
         $lookup: {
           from: "users",
