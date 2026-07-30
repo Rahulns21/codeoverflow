@@ -2,6 +2,8 @@ import { ActionResponse, Answer } from "@/app/types/global";
 import DataRenderer from "../DataRenderer";
 import { EMPTY_ANSWERS } from "@/constants/states";
 import AnswerCard from "../cards/AnswerCard";
+import CommonFilter from "../filters/CommonFilter";
+import { AnswerFilters } from "@/constants/filters";
 
 interface Props extends ActionResponse<Answer[]> {
   totalAnswers: number;
@@ -10,18 +12,24 @@ interface Props extends ActionResponse<Answer[]> {
 const AllAnswers = ({ data, success, error, totalAnswers }: Props) => {
   return (
     <div className="mt-11">
-      <div className="flex items-center justify-between">
-        <h3 className="primary-text-gradient">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h3 className="primary-text-gradient text-base font-semibold sm:text-lg">
           {totalAnswers} {totalAnswers === 1 ? "Answer" : "Answers"}
         </h3>
-        <p>Filters</p>
+        <CommonFilter
+          filters={AnswerFilters}
+          otherClasses="min-h-[48px] w-full sm:w-auto sm:min-w-32"
+          containerClasses="w-full sm:w-auto"
+        />
       </div>
       <DataRenderer
         data={data}
         error={error}
         success={success}
         empty={EMPTY_ANSWERS}
-        render={(answers) => answers.map((answer) => <AnswerCard key={answer._id} {...answer} />)}
+        render={(answers) =>
+          answers.map((answer) => <AnswerCard key={answer._id} {...answer} />)
+        }
       />
     </div>
   );

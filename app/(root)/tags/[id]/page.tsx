@@ -6,7 +6,6 @@ import ROUTES from "@/constants/route";
 import { EMPTY_QUESTION } from "@/constants/states";
 import { getTagQuestions } from "@/lib/actions/tag.action";
 import { SearchIcon } from "lucide-react";
-import React from "react";
 
 const page = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
@@ -27,7 +26,7 @@ const page = async ({ params, searchParams }: RouteParams) => {
         <h1 className="h1-bold text-dark100_light900">{tag?.name}</h1>
       </section>
 
-      <section className="mx-auto mt-11 max-w-4xl">
+      <section className="mx-auto mt-11 max-w-4xl flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearch
           icon={
             <SearchIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
