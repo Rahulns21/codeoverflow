@@ -40,7 +40,10 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
     filter,
   });
 
-  const hasVotedPromise = hasVoted({ targetId: question._id, targetType: "question" });
+  const hasVotedPromise = hasVoted({
+    targetId: question._id,
+    targetType: "question",
+  });
 
   const hasSavedQuestionPromise = hasSavedQuestion({
     questionId: question._id,
@@ -66,7 +69,7 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
             </Link>
           </div>
 
-          <div className="flex justify-end items-center gap-4">
+          <div className="flex items-center justify-end gap-4">
             <Suspense fallback={<div>Loading...</div>}>
               <Votes
                 targetType={"question"}
@@ -78,9 +81,10 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
             </Suspense>
 
             <Suspense fallback={<div>Loading...</div>}>
-              <SaveQuestion 
-              questionId={question._id}
-              hasSavedQuestionPromise={hasSavedQuestionPromise} />
+              <SaveQuestion
+                questionId={question._id}
+                hasSavedQuestionPromise={hasSavedQuestionPromise}
+              />
             </Suspense>
           </div>
         </div>
@@ -129,6 +133,8 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
 
       <section className="my-5">
         <AllAnswers
+          page={Number(page || 1)}
+          isNext={answersResult?.isNext || false}
           data={answersResult?.answers}
           success={areAnswersLoaded}
           error={answersError}

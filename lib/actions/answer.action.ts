@@ -1,7 +1,11 @@
 "use server";
 
 import { CreateAnswerParams, GetAnswersParams } from "@/app/types/action";
-import { ActionResponse, ErrorResponse, Answer as AnswerType } from "@/app/types/global";
+import {
+  ActionResponse,
+  ErrorResponse,
+  Answer as AnswerType,
+} from "@/app/types/global";
 import ROUTES from "@/constants/route";
 import { Question } from "@/database";
 import Answer, { IAnswerDoc } from "@/database/answer.model";
@@ -108,16 +112,16 @@ export async function getAnswers(params: GetAnswersParams): Promise<
       .skip(skip)
       .limit(limit);
 
-      const isNext = totalAnswers > skip + answers.length;
+    const isNext = totalAnswers > skip + answers.length;
 
-      return {
-        success: true,
-        data: {
-          answers: JSON.parse(JSON.stringify(answers)),
-          isNext,
-          totalAnswers
-        }
-      }
+    return {
+      success: true,
+      data: {
+        answers: JSON.parse(JSON.stringify(answers)),
+        isNext,
+        totalAnswers,
+      },
+    };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }

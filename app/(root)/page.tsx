@@ -4,6 +4,7 @@ import DataRenderer from "@/components/DataRenderer";
 import CommonFilter from "@/components/filters/CommonFilter";
 import HomeFilter from "@/components/filters/HomeFilter";
 import SearchIcon from "@/components/icons/SearchIcon";
+import Pagination from "@/components/Pagination";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
@@ -30,7 +31,7 @@ const Home = async ({ searchParams }: SearchParams) => {
     filter: filter || "",
   });
 
-  const { questions } = data || {};
+  const { questions, isNext } = data || {};
 
   return (
     <>
@@ -45,14 +46,14 @@ const Home = async ({ searchParams }: SearchParams) => {
         </Button>
       </section>
 
-      <section className="mx-auto mt-11 max-w-4xl flex justify-between gap-5 max-sm:flex-col sm:items-center">
+      <section className="mx-auto mt-11 flex max-w-4xl justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearch
           icon={
             <SearchIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
           }
         />
 
-        <CommonFilter 
+        <CommonFilter
           filters={HomePageFilters}
           otherClasses="min-h-[56px] sm:min-w-[170px]"
           containerClasses="hidden max-md:flex"
@@ -72,6 +73,12 @@ const Home = async ({ searchParams }: SearchParams) => {
             ))}
           </div>
         )}
+      />
+
+      <Pagination
+        page={page}
+        isNext={isNext || false}
+        containerClasses="mt-5"
       />
     </>
   );

@@ -1,8 +1,8 @@
 export const HomePageFilters = [
-    { name: "Newest", value: "newest" },
-    { name: "Popular", value: "popular" },
-    { name: "Unasnwered", value: "unanswered" },
-    { name: "Recommended", value: "recommended" },
+  { name: "Newest", value: "newest" },
+  { name: "Popular", value: "popular" },
+  { name: "Unasnwered", value: "unanswered" },
+  { name: "Recommended", value: "recommended" },
 ];
 
 export const AnswerFilters = [
@@ -33,10 +33,10 @@ export const TagQuestionFilters = [
   { name: "Most Viewed", value: "mostviewed" },
   { name: "Most Answered", value: "mostanswered" },
   { name: "Trending", value: "trending" },
-]
+];
 
 export const UserFilters = [
-    { name: "Newest", value: "newest" },
-    { name: "Oldest", value: "oldest" },
-    { name: "Popular", value: "popular" },
+  { name: "Newest", value: "newest" },
+  { name: "Oldest", value: "oldest" },
+  { name: "Popular", value: "popular" },
 ];
