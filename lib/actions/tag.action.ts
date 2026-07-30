@@ -1,3 +1,4 @@
+import { GetTagQuestionsParams } from "@/app/types/action";
 import {
   ActionResponse,
   ErrorResponse,
@@ -5,12 +6,11 @@ import {
   Question,
   Tag,
 } from "@/app/types/global";
-import action from "../handlers/action";
-import { GetTagQuestionsSchema, PaginatedSearchParamsSchema } from "../validations";
-import handleError from "../handlers/error";
-import { QueryFilter } from "mongoose";
 import { Question as QuestionModel, Tag as TagModel } from "@/database";
-import { GetTagQuestionsParams } from "@/app/types/action";
+import { QueryFilter } from "mongoose";
+import action from "../handlers/action";
+import handleError from "../handlers/error";
+import { GetTagQuestionsSchema, PaginatedSearchParamsSchema } from "../validations";
 
 export const getTags = async (
   params: PaginatedSearchParams
@@ -87,7 +87,7 @@ export const getTagQuestions = async (
     return handleError(validationResult) as ErrorResponse;
   }
   
-  const { page = 1, pageSize = 10, query, tagId } = params;
+  const { page = 1, pageSize = 10, query, tagId, filter } = params;
 
   const skip = (Number(page) - 1) * pageSize;
   const limit = Number(pageSize);
@@ -104,6 +104,31 @@ export const getTagQuestions = async (
       filterQuery.title = { $regex: query, $options: "i" };
     }
 
+    let sortCriteria: Record<string, 1 | -1> = {};
+
+    switch (filter) {
+      case "newest":
+        sortCriteria = { createdAt: -1 };
+        break;
+      case "oldest":
+        sortCriteria = { createdAt: 1 };
+        break;
+      case "mostvoted":
+        sortCriteria = { upvotes: -1 };
+        break;
+      case "mostviewed":
+        sortCriteria = { views: -1 };
+        break;
+      case "mostanswered":
+        sortCriteria = { answers: -1 };
+        break;
+      case "trending":
+        sortCriteria = { views: -1, upvotes: -1 };
+        break;
+      default:
+        sortCriteria = { createdAt: -1 };
+    }
+
     const totalQuestions = await QuestionModel.countDocuments(filterQuery);
 
     const questions = await QuestionModel.find(filterQuery)
@@ -112,6 +137,7 @@ export const getTagQuestions = async (
         { path: 'author', select: 'name image' },
         { path: 'tags', select: 'name' },
       ])
+      .sort(sortCriteria)
       .skip(skip)
       .limit(limit);
 
