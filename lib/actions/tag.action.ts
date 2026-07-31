@@ -4,17 +4,21 @@ import {
   ErrorResponse,
   PaginatedSearchParams,
   Question,
-  Tag,
+  Tag as TagParams,
 } from "@/app/types/global";
-import { Question as QuestionModel, Tag as TagModel } from "@/database";
+import { Question as QuestionModel, Tag, Tag as TagModel } from "@/database";
 import { QueryFilter } from "mongoose";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { GetTagQuestionsSchema, PaginatedSearchParamsSchema } from "../validations";
+import {
+  GetTagQuestionsSchema,
+  PaginatedSearchParamsSchema,
+} from "../validations";
+import dbConnect from "../mongoose";
 
 export const getTags = async (
   params: PaginatedSearchParams
-): Promise<ActionResponse<{ tags: Tag[]; isNext: boolean }>> => {
+): Promise<ActionResponse<{ tags: TagParams[]; isNext: boolean }>> => {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,
@@ -77,16 +81,18 @@ export const getTags = async (
 
 export const getTagQuestions = async (
   params: GetTagQuestionsParams
-): Promise<ActionResponse<{ tag: Tag; questions: Question[]; isNext: boolean }>> => {
+): Promise<
+  ActionResponse<{ tag: TagParams; questions: Question[]; isNext: boolean }>
+> => {
   const validationResult = await action({
     params,
-    schema: GetTagQuestionsSchema
+    schema: GetTagQuestionsSchema,
   });
 
   if (validationResult instanceof Error) {
     return handleError(validationResult) as ErrorResponse;
   }
-  
+
   const { page = 1, pageSize = 10, query, tagId, filter } = params;
 
   const skip = (Number(page) - 1) * pageSize;
@@ -99,7 +105,7 @@ export const getTagQuestions = async (
     const filterQuery: QueryFilter<typeof QuestionModel> = {
       tags: { $in: [tagId] },
     };
-  
+
     if (query) {
       filterQuery.title = { $regex: query, $options: "i" };
     }
@@ -132,10 +138,10 @@ export const getTagQuestions = async (
     const totalQuestions = await QuestionModel.countDocuments(filterQuery);
 
     const questions = await QuestionModel.find(filterQuery)
-      .select('_id title views answers upvotes downvotes author createdAt')
+      .select("_id title views answers upvotes downvotes author createdAt")
       .populate([
-        { path: 'author', select: 'name image' },
-        { path: 'tags', select: 'name' },
+        { path: "author", select: "name image" },
+        { path: "tags", select: "name" },
       ])
       .sort(sortCriteria)
       .skip(skip)
@@ -148,12 +154,25 @@ export const getTagQuestions = async (
       data: {
         tag: JSON.parse(JSON.stringify(tag)),
         questions: JSON.parse(JSON.stringify(questions)),
-        isNext
-      }
-    }
-
+        isNext,
+      },
+    };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
+};
 
+export const getTopTags = async (): Promise<ActionResponse<TagParams[]>> => {
+  try {
+    await dbConnect();
+
+    const tags = await Tag.find().sort({ questions: -1 }).limit(5).lean();
+
+    return {
+      success: true,
+      data: tags,
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
 };
