@@ -42,12 +42,12 @@ const Metric = ({
         </div>
       )}
 
-      <p className={`${textStyles} flex items-center gap-1`}>
+      <p className={`${textStyles} flex flex-wrap items-center gap-1`}>
         {value}
 
         {title ? (
           <span
-            className={cn(`small-regular line-clamp-1`, titleStyles)}
+            className={cn(`small-regular wrap-break-word`, titleStyles)}
           >
             {title}
           </span>

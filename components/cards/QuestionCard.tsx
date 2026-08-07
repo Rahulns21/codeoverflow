@@ -14,13 +14,10 @@ const QuestionCard = ({
 }: Props) => {
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">
-      <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
-        <div>
-          <span className="subtle-regular text-dark400_light700 hidden max-sm:inline line-clamp-1 ">
-            {getTimeStamp(createdAt)}
-          </span>
+      <div className="flex flex-col items-start justify-between gap-2 sm:gap-5 sm:flex-row">
+        <div className="w-full">
           <Link href={ROUTES.QUESTION(_id)}>
-            <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-1 flex-1">
+            <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-2 wrap-break-word w-full">
               {title}
             </h3>
           </Link>
@@ -44,19 +41,19 @@ const QuestionCard = ({
           value={author.name}
           title={`• asked ${getTimeStamp(createdAt)}`}
           href={ROUTES.PROFILE(author._id)}
-          textStyles="body-medium text-dark400_light700" 
+          textStyles="body-medium text-dark400_light700 break-words" 
           isAuthor
           fallback={initials(author.name)}
-          titleStyles="max-sm:hidden"
+          titleStyles="xl:flex-nowrap flex-wrap"
         />
 
         <div className="flex items-center gap-3 
-        max-sm:flex-wrap max-sm:justify-center">
+        max-sm:flex-nowrap">
           <Metric 
           imgUrl="/icons/like.svg"
           alt="like"
           value={upvotes}
-          title="Votes"
+          title=""
           textStyles="small-medium
           text-dark400_light800" 
         />
@@ -64,7 +61,7 @@ const QuestionCard = ({
           imgUrl="/icons/message.svg"
           alt="answers"
           value={answers}
-          title="Answers"
+          title=""
           textStyles="small-medium
           text-dark400_light800" 
         />
@@ -72,7 +69,7 @@ const QuestionCard = ({
           imgUrl="/icons/eye.svg"
           alt="views"
           value={views}
-          title="Views"
+          title=""
           textStyles="small-medium
           text-dark400_light800" 
         />
