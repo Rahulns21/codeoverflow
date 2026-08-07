@@ -31,7 +31,7 @@ const Stats = ({ totalAnswers, totalQuestions, badges }: Props) => {
 
       <div className="xs:grid-cols-2 mt-5 grid grid-cols-1 gap-5 md:grid-cols-4">
         <div className="light-border background-light900_dark300 shadow-light-300 dark:shadow-dark-200 flex flex-wrap items-center justify-evenly gap-4 rounded-md border p-6">
-          <div>
+          <div className="text-center">
             <p className="paragraph-semibold text-dark200_light900">
               {formatNumber(totalQuestions)}
             </p>
@@ -39,7 +39,7 @@ const Stats = ({ totalAnswers, totalQuestions, badges }: Props) => {
             <p className="body-medium text-dark400_light700">Questions</p>
           </div>
 
-          <div>
+          <div className="text-center">
             <p className="paragraph-semibold text-dark200_light900">
               {formatNumber(totalAnswers)}
             </p>
