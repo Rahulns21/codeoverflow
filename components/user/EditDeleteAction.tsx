@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { deleteAnswer } from "@/lib/actions/answer.action";
 import { deleteQuestion } from "@/lib/actions/question.action";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -22,7 +23,7 @@ interface Props {
 }
 
 const EditDeleteAction = ({ type, itemId }: Props) => {
-    const router = useRouter();
+  const router = useRouter();
 
   const handleEdit = async () => {
     router.push(`/questions/${itemId}/edit`);
@@ -33,19 +34,22 @@ const EditDeleteAction = ({ type, itemId }: Props) => {
       await deleteQuestion({ questionId: itemId });
 
       toast.success("Question deleted", {
-        description: "Your question and it's answers has been deleted successfully.",
+        description:
+          "Your question and it's answers has been deleted successfully.",
       });
     } else if (type === "Answer") {
-        //TODO: implement delete answer
+      await deleteAnswer({ answerId: itemId });
 
-        toast.success("Answer deleted", {
-            description: "Your answer has been deleted successfully.",
-        });
+      toast.success("Answer deleted", {
+        description: "Your answer has been deleted successfully.",
+      });
     }
   };
 
   return (
-    <div className={`flex items-center justify-end gap-3 max-sm:w-full ${type === "Answer" && "gap-0 justify-center"}`}>
+    <div
+      className={`flex items-center justify-end gap-3 max-sm:w-full ${type === "Answer" && "justify-center gap-0"}`}
+    >
       {type === "Question" && (
         <Image
           src={"/icons/edit.svg"}
