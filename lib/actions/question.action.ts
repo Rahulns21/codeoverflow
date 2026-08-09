@@ -30,6 +30,8 @@ import {
 } from "../validations";
 import { Answer, Collection, Vote } from "@/database";
 import { revalidatePath } from "next/cache";
+import { createInteraction } from "./interaction.action";
+import { after } from "next/server";
 
 export async function createQuestion(
   params: CreateQuestionParams
@@ -86,6 +88,17 @@ export async function createQuestion(
     );
 
     const questionData = JSON.parse(JSON.stringify(question));
+
+    //log the interaction
+    after(async () => {
+      await createInteraction({
+        action: "post",
+        actionId: question._id.toString(),
+        actionTarget: "question",
+        authorId: userId as string,
+      });
+    });
+
     await session.commitTransaction();
 
     return {
