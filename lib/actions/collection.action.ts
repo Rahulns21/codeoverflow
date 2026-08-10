@@ -5,7 +5,7 @@ import {
   ActionResponse,
   ErrorResponse,
   PaginatedSearchParams,
-  Collection as CollectionType
+  Collection as CollectionType,
 } from "@/app/types/global";
 import mongoose, { PipelineStage } from "mongoose";
 import action from "../handlers/action";
@@ -14,9 +14,11 @@ import {
   PaginatedSearchParamsSchema,
 } from "../validations";
 import handleError from "../handlers/error";
-import { Collection, Question } from "@/database";
+import { Collection, Interaction, Question } from "@/database";
 import { revalidatePath } from "next/cache";
 import ROUTES from "@/constants/route";
+import { createInteraction } from "./interaction.action";
+import { after } from "next/server";
 
 export async function toggleSaveQuestion(
   params: CollectionBaseParams
@@ -46,6 +48,19 @@ export async function toggleSaveQuestion(
     if (collection) {
       await Collection.findByIdAndDelete(collection._id);
 
+      after(async () => {
+        try {
+          await Interaction.deleteOne({
+            user: userId,
+            actionId: questionId,
+            action: "bookmark",
+            actionType: "question",
+          });
+        } catch (error) {
+          console.error("Failed to remove bookmark interaction: ", error);
+        }
+      });
+
       revalidatePath(ROUTES.QUESTION(questionId));
 
       return {
@@ -59,6 +74,16 @@ export async function toggleSaveQuestion(
     await Collection.create({
       question: questionId,
       author: userId,
+    });
+
+    // log the interaction
+    after(async () => {
+      await createInteraction({
+        action: "bookmark",
+        actionId: question._id.toString(),
+        actionTarget: "question",
+        authorId: userId as string,
+      });
     });
 
     revalidatePath(ROUTES.QUESTION(questionId));
@@ -156,8 +181,8 @@ export async function getSavedQuestions(
           localField: "question.author",
           foreignField: "_id",
           as: "question.author",
-        }
-      }, 
+        },
+      },
       { $unwind: "$question.author" },
       {
         $lookup: {
@@ -165,23 +190,24 @@ export async function getSavedQuestions(
           localField: "question.tags",
           foreignField: "_id",
           as: "question.tags",
-        }
-      }
+        },
+      },
     ];
 
     if (query) {
       pipeline.push({
         $match: {
           $or: [
-            {"question.title": { $regex: query, $options: "i" }},
-            {"question.content": { $regex: query, $options: "i" }},
-          ]
-        }
-      })
+            { "question.title": { $regex: query, $options: "i" } },
+            { "question.content": { $regex: query, $options: "i" } },
+          ],
+        },
+      });
     }
 
     const [totalCount] = await Collection.aggregate([
-      ...pipeline, { $count: "count" }
+      ...pipeline,
+      { $count: "count" },
     ]);
 
     pipeline.push({ $sort: sortCriteria }, { $skip: skip }, { $limit: limit });
@@ -195,9 +221,9 @@ export async function getSavedQuestions(
       success: true,
       data: {
         collection: JSON.parse(JSON.stringify(questions)),
-        isNext
-      }
-    }
+        isNext,
+      },
+    };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }

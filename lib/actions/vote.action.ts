@@ -15,10 +15,9 @@ import {
 } from "../validations";
 import handleError from "../handlers/error";
 import mongoose, { ClientSession } from "mongoose";
-import { Answer, Question, Vote } from "@/database";
+import { Answer, Interaction, Question, Vote } from "@/database";
 import { revalidatePath } from "next/cache";
 import ROUTES from "@/constants/route";
-import { after } from "next/server";
 import { createInteraction } from "./interaction.action";
 
 export async function updateVoteCount(
@@ -88,10 +87,18 @@ export async function createVote(
     if (existingVote) {
       if (existingVote.voteType === voteType) {
         await Vote.deleteOne({ _id: existingVote._id }).session(session);
+
         await updateVoteCount(
           { targetId, targetType, voteType, change: -1 },
           session
         );
+
+        await Interaction.deleteOne({
+          user: userId,
+          actionId: targetId,
+          action: voteType,
+          actionType: targetType,
+        }).session(session).exec();
       } else {
         await Vote.findByIdAndUpdate(
           existingVote._id,
@@ -106,32 +113,46 @@ export async function createVote(
           { targetId, targetType, voteType, change: 1 },
           session
         );
+
+        // Delete the OLD interaction
+        await Interaction.deleteOne({
+          user: userId,
+          actionId: targetId,
+          action: existingVote.voteType,
+          actionType: targetType,
+        }).session(session).exec();
+
+        // create new interaction
+        await createInteraction({
+          action: voteType,
+          actionId: targetId,
+          actionTarget: targetType,
+          authorId: userId,       
+        });
       }
     } else {
       await Vote.create([{ author: userId, actionId: targetId, actionType: targetType, voteType }], {
         session,
       });
+
       await updateVoteCount(
         { targetId, targetType, voteType, change: 1 },
         session
       );
+
+      // create new interaction
+      await createInteraction({
+        action: voteType,
+        actionId: targetId,
+        actionTarget: targetType,
+        authorId: userId,
+      });
     }
 
     const Model = targetType === "question" ? Question : Answer;
 
     const contentDoc = await Model.findById(targetId).session(session);
     if (!contentDoc) throw new Error("Content not found");
-
-    const contentAuthorId = contentDoc.author.toString();
-
-    after(async () => {
-      await createInteraction({
-        action: voteType,
-        actionId: targetId,
-        actionTarget: targetType,
-        authorId: contentAuthorId,
-      });
-    });
 
     await session.commitTransaction();
     session.endSession();

@@ -11,7 +11,7 @@ import {
   Answer as AnswerType,
 } from "@/app/types/global";
 import ROUTES from "@/constants/route";
-import { Question, Vote } from "@/database";
+import { Interaction, Question, Vote } from "@/database";
 import Answer, { IAnswerDoc } from "@/database/answer.model";
 import mongoose from "mongoose";
 import { revalidatePath } from "next/cache";
@@ -184,6 +184,13 @@ export async function deleteAnswer(
     await Vote.deleteMany({ actionId: answerId, actionType: "answer" }).session(
       session
     );
+
+    await Interaction.deleteOne({
+      user,
+      actionId: answerId,
+      action: "post",
+      actionType: "answer",
+    }).session(session).exec();
 
     await Answer.findByIdAndDelete(answerId).session(session);
 
