@@ -1,6 +1,6 @@
 import { Document, model, models, Schema, Types } from "mongoose";
 
-export const InteractionActionEnums = [
+const InteractionActionEnums = [
   "view",
   "upvote",
   "downvote",

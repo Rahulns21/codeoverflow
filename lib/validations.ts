@@ -1,5 +1,5 @@
-import { InteractionActionEnums } from "@/database/interaction.model";
 import { z } from "zod";
+import { InteractionActionEnums } from "./enums";
 
 export const SignInSchema = z.object({
   email: z.email({ message: "Please provide a valid email address." }),
