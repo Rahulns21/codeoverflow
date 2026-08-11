@@ -9,10 +9,13 @@ import { CollectionFilters } from "@/constants/filters";
 import ROUTES from "@/constants/route";
 import { EMPTY_QUESTION } from "@/constants/states";
 import { getSavedQuestions } from "@/lib/actions/collection.action";
+import { collectionMetadata } from "@/lib/metadata";
 
 interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
+
+export const metadata = collectionMetadata;
 
 const Collections = async ({ searchParams }: SearchParams) => {
   const session = await auth();

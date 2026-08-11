@@ -21,6 +21,9 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import Pagination from "@/components/Pagination";
 import AnswerCard from "@/components/cards/AnswerCard";
 import TagCard from "@/components/cards/TagCard";
+import { profileMetadata } from "@/lib/metadata";
+
+export const metadata = profileMetadata;
 
 const Profile = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;

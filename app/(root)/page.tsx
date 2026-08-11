@@ -11,11 +11,14 @@ import { HomePageFilters } from "@/constants/filters";
 import ROUTES from "@/constants/route";
 import { EMPTY_QUESTION } from "@/constants/states";
 import { getQuestions } from "@/lib/actions/question.action";
+import { homeMetadata } from "@/lib/metadata";
 import Link from "next/link";
 
 interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
+
+export const metadata = homeMetadata;
 
 const Home = async ({ searchParams }: SearchParams) => {
   const session = await auth();

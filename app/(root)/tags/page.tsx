@@ -8,7 +8,10 @@ import { TagFilters } from "@/constants/filters";
 import ROUTES from "@/constants/route";
 import { EMPTY_TAGS } from "@/constants/states";
 import { getTags } from "@/lib/actions/tag.action";
+import { tagsMetadata } from "@/lib/metadata";
 import { SearchIcon } from "lucide-react";
+
+export const metadata = tagsMetadata;
 
 const Tags = async ({ searchParams }: RouteParams) => {
   const { page, pageSize, query, filter } = await searchParams;

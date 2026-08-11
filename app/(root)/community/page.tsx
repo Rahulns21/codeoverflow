@@ -8,7 +8,10 @@ import { UserFilters } from "@/constants/filters";
 import ROUTES from "@/constants/route";
 import { EMPTY_USERS } from "@/constants/states";
 import { getUsers } from "@/lib/actions/user.action";
+import { communityMetadata } from "@/lib/metadata";
 import { SearchIcon } from "lucide-react";
+
+export const metadata = communityMetadata;
 
 const Community = async ({ searchParams }: RouteParams) => {
   const { page, pageSize, query, filter } = await searchParams;

@@ -15,6 +15,7 @@ import {
   PaginatedSearchParamsSchema,
 } from "../validations";
 import dbConnect from "../mongoose";
+import { cache } from "react";
 
 export const getTags = async (
   params: PaginatedSearchParams
@@ -79,7 +80,7 @@ export const getTags = async (
   }
 };
 
-export const getTagQuestions = async (
+export const getTagQuestions = cache(async (
   params: GetTagQuestionsParams
 ): Promise<
   ActionResponse<{ tag: TagParams; questions: Question[]; isNext: boolean }>
@@ -160,7 +161,7 @@ export const getTagQuestions = async (
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-};
+});
 
 export const getTopTags = async (): Promise<ActionResponse<TagParams[]>> => {
   try {

@@ -10,6 +10,32 @@ import { EMPTY_QUESTION } from "@/constants/states";
 import { getTagQuestions } from "@/lib/actions/tag.action";
 import { capitalize } from "@/lib/utils";
 import { SearchIcon } from "lucide-react";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: RouteParams): Promise<Metadata> {
+  const { id } = await params;
+
+  const { success, data } = await getTagQuestions({ 
+    tagId: id, 
+    page: 1, 
+    pageSize: 1
+  });
+
+  const tagName = data?.tag?.name;
+
+  if (!success || !tagName) {
+    return {
+      title: "Tag Not Found",
+    };
+  }
+
+  return {
+    title: `${capitalize(tagName)} Questions`,
+    description: `Browse the latest questions, discussions, and solutions tagged with ${tagName} on CodeOverflow. Find expert answers for your ${tagName} programming challenges.`,
+  };
+}
 
 const page = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;

@@ -21,11 +21,38 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "CodeOverflow",
+  generator: 'Next.js',
+  applicationName: 'CodeOverflow',
+  referrer: 'origin-when-cross-origin',
+  keywords: ['JavaScript', 'React', 'Next.js', 'web development', 'CodeOverflow', 'Code Overflow', 'Java', 'C Programming', 'C++'],
+  authors: [
+    { name: 'Rahul NS' }
+  ],
+  creator: 'Rahul NS',
+  publisher: 'CodeOverflow',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  title: {
+    template: "%s | CodeOverflow",
+    default: "CodeOverflow", 
+  },
   description:
     "A community driven platform for asking and answering programming questions. Get help, share knowledge and collaborate with developers from around the world. Explore topics in web development, mobile app development, algorithms, data structures, and more.",
   icons: {
     icon: "/images/site-logo.svg",
+  },
+
+  robots: {
+    index: true,  
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+    },
   },
 };
 
