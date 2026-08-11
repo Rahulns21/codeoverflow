@@ -255,12 +255,12 @@ export const getQuestion = cache(async function getQuestion(
   }
 });
 
-export async function getRecommendedQuestions({
+export const getRecommendedQuestions = cache(async ({
   userId,
   query,
   skip,
   limit,
-}: RecommendationParams) {
+}: RecommendationParams) => {
   // get user's recent interactions
   const interactions = await Interaction.find({
     user: new Types.ObjectId(userId),
@@ -316,11 +316,11 @@ export async function getRecommendedQuestions({
     questions: JSON.parse(JSON.stringify(questions)),
     isNext: total > skip + questions.length,
   };
-}
+});
 
-export async function getQuestions(
+export const getQuestions = cache(async(
   params: PaginatedSearchParams
-): Promise<ActionResponse<{ questions: QuestionParams[]; isNext: boolean }>> {
+): Promise<ActionResponse<{ questions: QuestionParams[]; isNext: boolean }>> => {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,
@@ -398,7 +398,7 @@ export async function getQuestions(
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-}
+});
 
 export async function incrementViews(
   params: IncrementViewsParams
@@ -432,9 +432,9 @@ export async function incrementViews(
   }
 }
 
-export async function getHotQuestions(): Promise<
+export const getHotQuestions = cache(async(): Promise<
   ActionResponse<QuestionParams[]>
-> {
+> => {
   try {
     await dbConnect();
 
@@ -449,7 +449,7 @@ export async function getHotQuestions(): Promise<
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-}
+});
 
 export async function deleteQuestion(
   params: DeleteQuestionParams

@@ -19,6 +19,7 @@ import { revalidatePath } from "next/cache";
 import ROUTES from "@/constants/route";
 import { createInteraction } from "./interaction.action";
 import { after } from "next/server";
+import { cache } from "react";
 
 export async function toggleSaveQuestion(
   params: CollectionBaseParams
@@ -99,9 +100,9 @@ export async function toggleSaveQuestion(
   }
 }
 
-export async function hasSavedQuestion(
+export const hasSavedQuestion = cache(async (
   params: CollectionBaseParams
-): Promise<ActionResponse<{ saved: boolean }>> {
+): Promise<ActionResponse<{ saved: boolean }>> => {
   const validationResult = await action({
     params,
     schema: CollectionBaseSchema,
@@ -130,11 +131,11 @@ export async function hasSavedQuestion(
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-}
+});
 
-export async function getSavedQuestions(
+export const getSavedQuestions = cache(async (
   params: PaginatedSearchParams
-): Promise<ActionResponse<{ collection: CollectionType[]; isNext: boolean }>> {
+): Promise<ActionResponse<{ collection: CollectionType[]; isNext: boolean }>> => {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,
@@ -227,4 +228,4 @@ export async function getSavedQuestions(
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-}
+});

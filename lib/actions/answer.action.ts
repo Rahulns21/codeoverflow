@@ -24,6 +24,7 @@ import {
 } from "../validations";
 import { after } from "next/server";
 import { createInteraction } from "./interaction.action";
+import { cache } from "react";
 
 export async function createAnswer(
   params: CreateAnswerParams
@@ -86,13 +87,13 @@ export async function createAnswer(
   }
 }
 
-export async function getAnswers(params: GetAnswersParams): Promise<
+export const getAnswers = cache(async (params: GetAnswersParams): Promise<
   ActionResponse<{
     answers: AnswerType[];
     isNext: boolean;
     totalAnswers: number;
   }>
-> {
+> => {
   const validationResult = await action({
     params,
     schema: GetAnswersSchema,
@@ -145,7 +146,7 @@ export async function getAnswers(params: GetAnswersParams): Promise<
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-}
+});
 
 export async function deleteAnswer(
   params: DeleteAnswerParams

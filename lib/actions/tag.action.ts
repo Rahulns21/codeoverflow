@@ -17,7 +17,7 @@ import {
 import dbConnect from "../mongoose";
 import { cache } from "react";
 
-export const getTags = async (
+export const getTags = cache(async (
   params: PaginatedSearchParams
 ): Promise<ActionResponse<{ tags: TagParams[]; isNext: boolean }>> => {
   const validationResult = await action({
@@ -78,7 +78,7 @@ export const getTags = async (
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-};
+});
 
 export const getTagQuestions = cache(async (
   params: GetTagQuestionsParams
@@ -163,7 +163,7 @@ export const getTagQuestions = cache(async (
   }
 });
 
-export const getTopTags = async (): Promise<ActionResponse<TagParams[]>> => {
+export const getTopTags = cache(async (): Promise<ActionResponse<TagParams[]>> => {
   try {
     await dbConnect();
 
@@ -176,4 +176,4 @@ export const getTopTags = async (): Promise<ActionResponse<TagParams[]>> => {
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-};
+});
