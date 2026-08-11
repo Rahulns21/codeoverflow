@@ -34,6 +34,7 @@ import { revalidatePath } from "next/cache";
 import { createInteraction } from "./interaction.action";
 import { after } from "next/server";
 import { auth } from "@/auth";
+import { cache } from "react";
 
 export async function createQuestion(
   params: CreateQuestionParams
@@ -224,7 +225,7 @@ export async function editQuestion(
   }
 }
 
-export async function getQuestion(
+export const getQuestion = cache(async function getQuestion(
   params: GetQuestionParams
 ): Promise<ActionResponse<QuestionParams>> {
   const validationResult = await action({
@@ -252,7 +253,7 @@ export async function getQuestion(
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-}
+});
 
 export async function getRecommendedQuestions({
   userId,
