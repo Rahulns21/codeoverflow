@@ -21,9 +21,7 @@ interface SearchParams {
 export const metadata = homeMetadata;
 
 const Home = async ({ searchParams }: SearchParams) => {
-  const session = await auth();
-
-  console.log(`Session: ${session}`);
+  await auth();
 
   const { page, pageSize, query, filter } = await searchParams;
 
