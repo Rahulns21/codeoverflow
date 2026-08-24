@@ -107,3 +107,24 @@ export const assignBadges = (params: {
 
   return badgeCounts;
 }
+
+export const formatSalary = (salary: string | number | null | undefined): string => {
+  if (!salary) return "Not Disclosed";
+
+  if (typeof salary === "string" && /[$,-]/.test(salary)) {
+    return salary;
+  }
+
+  if (typeof salary === "string") {
+    const cleanNumber = salary.replace(/[^0-9]/g, "");
+    if (cleanNumber.length > 0) {
+      return `${Number(cleanNumber).toLocaleString()}`;
+    }
+  }
+
+  if (typeof salary === "number") {
+    return `${salary.toLocaleString()}`;
+  }
+
+  return "Not Disclosed";
+}
