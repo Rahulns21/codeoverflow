@@ -40,3 +40,12 @@ export const UserFilters = [
   { name: "Oldest", value: "oldest" },
   { name: "Popular", value: "popular" },
 ];
+
+export const LocationFilters = [
+  { name: "India", value: "india" },
+  { name: "United States", value: "unitedstates" },
+  { name: "United Kingdom", value: "unitedkingdom" },
+  { name: "Europe", value: "europe" },
+  { name: "Canada", value: "canada" },
+  { name: "Australia", value: "australia" },
+];

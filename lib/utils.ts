@@ -109,7 +109,7 @@ export const assignBadges = (params: {
 }
 
 export const formatSalary = (salary: string | number | null | undefined): string => {
-  if (!salary) return "Not Disclosed";
+  if (!salary || salary === "") return "Not Disclosed";
 
   if (typeof salary === "string" && /[$,-]/.test(salary)) {
     return salary;

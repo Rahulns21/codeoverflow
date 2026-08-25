@@ -1,18 +1,18 @@
 import ROUTES from "@/constants/route";
+import { formatSalary } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import LocationIcon from "../icons/LocationIcon";
-import { formatSalary } from "@/lib/utils";
 import JobIcon from "../icons/JobIcon";
+import LocationIcon from "../icons/LocationIcon";
 
 interface Props {
   imageUrl?: string;
-  jobTitle: string;
-  jobDescription: string;
-  jobLocation: string;
+  jobTitle?: string;
+  jobDescription?: string;
+  jobLocation?: string;
   jobType?: string;
-  actionLink: string;
-  salary?: string | number;
+  actionLink?: string;
+  salary?: string | number | null;
 }
 
 const JobCard = ({
@@ -65,7 +65,6 @@ const JobCard = ({
             </div>
           </div>
 
-          
           <div className="mt-2 flex flex-col gap-4">
             {/* DESCRIPTION */}
             <p className="text-dark500_light700 line-clamp-2 w-full text-sm">

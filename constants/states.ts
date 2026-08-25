@@ -57,3 +57,12 @@ export const EMPTY_USERS = {
   title: 'No Users Found',
   message: "You're ALONE. The only one here. More users are coming soon!"
 }
+
+export const EMPTY_JOBS = {
+  title: "No Jobs Found",
+  message: "The job market seems quiet right now. Try adjusting your search filters or exploring different locations.",
+  button: {
+    text: "Clear Filters",
+    href: ROUTES.JOBS,
+  },
+};
