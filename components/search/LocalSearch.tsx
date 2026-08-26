@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { formUrlQuery, removeKeysFromQuery } from "@/lib/url";
 
 type IconPosition = "left" | "right";
 
@@ -13,18 +12,20 @@ interface LocalSearchProp {
   iconPosition?: IconPosition;
   placeholder?: string;
   otherClasses?: string;
+  searchKey?: string;
 }
 
 const LocalSearch = ({
   icon,
   placeholder = "Search...",
   otherClasses,
-  iconPosition = 'left',
-  route
+  iconPosition = "left",
+  route,
+  searchKey = "query",
 }: LocalSearchProp) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const query = searchParams.get("query") || "";
+  const query = searchParams.get(searchKey) || "";
   const pathname = usePathname();
 
   const [searchQuery, setSearchQuery] = useState(query);
@@ -37,20 +38,20 @@ const LocalSearch = ({
 
       const basePath = route || pathname;
 
-      const newUrl = trimmedQuery
-        ? formUrlQuery({
-            params: searchParamsString,
-            key: "query",
-            value: trimmedQuery,
-          })
-        : removeKeysFromQuery({
-            params: searchParamsString,
-            keysToRemove: ["query"],
-          });
+      // ✅ THE FIX: Use raw URLSearchParams! No weird encoding!
+      const params = new URLSearchParams(searchParamsString);
+      
+      if (trimmedQuery) {
+        params.set(searchKey, trimmedQuery);
+      } else {
+        params.delete(searchKey);
+      }
+      
+      params.delete("page"); // <-- Always delete page when searching!
 
-      const currentUrl = searchParamsString
-        ? `${basePath}?${searchParamsString}`
-        : basePath;
+      const newUrl = `${basePath}?${params.toString()}`;
+
+      const currentUrl = `${basePath}?${searchParamsString}`;
 
       if (newUrl !== currentUrl) {
         router.replace(newUrl, { scroll: false });
@@ -58,7 +59,7 @@ const LocalSearch = ({
     }, 400);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, searchParamsString, pathname, router, route]);
+  }, [searchQuery, searchParamsString, pathname, router, route, searchKey]);
 
   return (
     <div

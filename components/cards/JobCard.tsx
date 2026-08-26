@@ -2,8 +2,8 @@ import ROUTES from "@/constants/route";
 import { formatSalary } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import JobIcon from "../icons/JobIcon";
 import LocationIcon from "../icons/LocationIcon";
+import JobLogo from "../JobLogo";
 
 interface Props {
   imageUrl?: string;
@@ -29,19 +29,7 @@ const JobCard = ({
       <div className="flex flex-col gap-2 sm:flex-row sm:gap-10">
         <div className="flex shrink-0 max-sm:flex-row max-sm:items-center max-sm:justify-between sm:mt-1">
           {/* LOGO or JOB ICON */}
-          <div className="bg-light-800 dark:bg-dark-400 flex size-12 shrink-0 items-center justify-center rounded-md">
-            {imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt="job-image"
-                height={48}
-                width={48}
-                className="object-contain"
-              />
-            ) : (
-              <JobIcon className="stroke-light-500 size-6" />
-            )}
-          </div>
+          <JobLogo imageUrl={imageUrl} />
 
           {/* LOCATION PILL - SMALL SCREENS */}
           <div className="background-light800_dark400 flex w-fit items-center gap-2 rounded-full px-2 py-2 sm:hidden sm:px-4 sm:py-1.5 xl:px-3 xl:py-1">

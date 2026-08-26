@@ -26,35 +26,31 @@ interface JobAPIResponse {
 interface JobParams {
     query?: string;
     location?: string;
-    cursor?: string;
+    page?: number;
 }
 
-const BASE_URL: string = "jsearch.p.rapidapi.com"
+const BASE_URL: string = "jsearch.p.rapidapi.com";
 
 export const getJobs = async ({
     query = "Next.js Developer",
     location = "",
-    cursor = "",
+    page = 1,
 }: JobParams): Promise<ActionResponse<{
     jobs: Job[];
     isNext: boolean;
-    cursor: string;
 }>> => {
     try {
-        const apiUrl = new URL("https://jsearch.p.rapidapi.com/search-v2");
+        const apiUrl = new URL("https://jsearch.p.rapidapi.com/search");
 
         if (location) {
             apiUrl.searchParams.set("query", `${query} in ${location}`);
         } else {
             apiUrl.searchParams.set("query", query);
         }
-        apiUrl.searchParams.set("num_pages", "1");
-
-        if (cursor) {
-            apiUrl.searchParams.set("cursor", cursor);
-        }
+        apiUrl.searchParams.set("num_pages", "10");
 
         const response = await fetch(apiUrl, {
+            next: { revalidate: 3600 },
             headers: {
                 "x-rapidapi-key": process.env.JSEARCH_API_KEY as string,
                 "x-rapidapi-host": BASE_URL,
@@ -78,8 +74,7 @@ export const getJobs = async ({
                     actionLink: job.job_apply_link,
                     salary: job.job_salary_string,
                 })),
-                isNext: !!data.data.cursor,
-                cursor: data.data.cursor,
+                isNext: data.status === "OK" && page < 10,
             },
         }
     } catch (error) {

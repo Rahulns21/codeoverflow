@@ -2,6 +2,7 @@ import JobCard from "@/components/cards/JobCard";
 import DataRenderer from "@/components/DataRenderer";
 import CommonFilter from "@/components/filters/CommonFilter";
 import SearchIcon from "@/components/icons/SearchIcon";
+import Pagination from "@/components/Pagination";
 import LocalSearch from "@/components/search/LocalSearch";
 import { LocationFilters } from "@/constants/filters";
 import ROUTES from "@/constants/route";
@@ -15,11 +16,12 @@ interface SearchParams {
 export const dynamic = "force-dynamic";
 
 const FindJobs = async ({ searchParams }: SearchParams) => {
-  const { query, location } = await searchParams;
+  const { query, location, page } = await searchParams;
 
   const { success, data, error } = await getJobs({
     query: query || "Next.js Developer",
     location: location || "",
+    page: Number(page) || 1,
   });
 
   return (
@@ -53,6 +55,12 @@ const FindJobs = async ({ searchParams }: SearchParams) => {
             ))}
           </div>
         )}
+      />
+
+      <Pagination
+        page={Number(page) || 1}
+        isNext={data?.isNext || false}
+        containerClasses="mt-10"
       />
     </div>
   );
