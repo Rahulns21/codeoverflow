@@ -132,3 +132,14 @@ interface RecommendationParams {
   skip: number;
   limit: number;
 }
+
+interface GlobalSearchParams {
+  query: string;
+  type?: string;
+}
+
+interface GlobalSearchResult {
+  title: string;
+  type: string;
+  id: mongoose.Types.ObjectId | string;
+}

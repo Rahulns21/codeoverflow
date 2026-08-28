@@ -217,3 +217,7 @@ export const CreateInteractionSchema = z.object({
   authorId: z.string().min(1, { message: "Author ID is required" }),
 });
 
+export const GlobalSearchSchema = z.object({
+  query: z.string().min(1).max(100),
+  type: z.enum(["all", "question", "user", "answer", "tag"]).optional(),
+});

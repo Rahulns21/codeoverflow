@@ -4,12 +4,13 @@ import Theme from "./Theme";
 import MobileNavigation from "./MobileNavigation";
 import { auth } from "@/auth";
 import UserAvatar from "@/components/UserAvatar";
+import GlobalSearch from "@/components/search/GlobalSearch";
 
 const Navbar = async () => {
   const session = await auth();
 
   return (
-    <nav className="flex-between background-light900_dark200 shadow-light-300 fixed z-50 w-full gap-5 p-6 sm:px-12 dark:shadow-none">
+    <nav className="flex-between background-light900_dark200 shadow-light-300 fixed z-50 w-full gap-5 p-6 sm:px-12 dark:shadow-none items-center flex">
       <Link href={"/"} className="flex items-center gap-1">
         <Image
           src="/images/site-logo.svg"
@@ -23,7 +24,7 @@ const Navbar = async () => {
         </p>
       </Link>
 
-      <p>Global Search</p>
+      <GlobalSearch />
 
       <div className="flex-between gap-5">
         <Theme />
