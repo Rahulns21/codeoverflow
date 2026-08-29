@@ -87,7 +87,6 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
     image,
     location,
     portfolio,
-    reputation,
     createdAt,
   } = user;
 
@@ -109,6 +108,12 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
               @{username}
             </p>
 
+            {email && (
+                <p className="paragraph-regular text-dark400_light800 mt-1">
+                  {email}
+                </p>
+              )}
+
             <div className="mt-5 flex flex-wrap items-center justify-start gap-5">
               {portfolio && (
                 <ProfileLink
@@ -119,7 +124,7 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
               )}
 
               {location && (
-                <ProfileLink imgUrl={"/icons/location.svg"} title="Location" />
+                <ProfileLink imgUrl={"/icons/location.svg"} title={location} />
               )}
 
               <ProfileLink
@@ -128,11 +133,11 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
               />
             </div>
 
-            {bio && (
-              <p className="paragraph-regular text-dark400_light800 mt-8">
-                {bio}
-              </p>
-            )}
+            <div className="flex flex-col items-start mt-4">
+              {bio && (
+                <ProfileLink imgUrl={"/icons/quote.svg"} title={bio} />
+              )}
+            </div>
           </div>
         </div>
 

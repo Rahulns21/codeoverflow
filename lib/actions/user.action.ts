@@ -10,7 +10,11 @@ import {
   User as UserParams,
 } from "@/app/types/global";
 import action from "../handlers/action";
-import { GetUserSchema, PaginatedSearchParamsSchema } from "../validations";
+import {
+  GetUserSchema,
+  PaginatedSearchParamsSchema,
+  UpdateUserSchema,
+} from "../validations";
 import handleError from "../handlers/error";
 import { Answer, Question, User } from "@/database";
 import { PipelineStage, QueryFilter, Types } from "mongoose";
@@ -19,9 +23,11 @@ import {
   GetUserParams,
   GetUserQuestionsParams,
   GetUserTagsParams,
+  UpdateUserParams,
 } from "@/app/types/action";
 import { assignBadges } from "../utils";
 import { cache } from "react";
+import { revalidatePath } from "next/cache";
 
 export const getUsers = cache(
   async (
@@ -113,14 +119,14 @@ export const getUser = cache(
     const { userId } = params;
 
     try {
-      const user = await User.findById(userId).lean();
+      const user = await User.findById(userId);
 
       if (!user) throw new Error("User not found");
 
       return {
         success: true,
         data: {
-          user,
+          user: JSON.parse(JSON.stringify(user)),
         },
       };
     } catch (error) {
@@ -351,3 +357,37 @@ export const getUserStats = cache(
     }
   }
 );
+
+export async function updateUser(
+  params: UpdateUserParams
+): Promise<ActionResponse<{ user: UserParams }>> {
+  const validationResult = await action({
+    params,
+    schema: UpdateUserSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { user } = validationResult.session!;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(user?.id, params, {
+      new: true,
+    });
+
+    revalidatePath(`/profile/${user?.id}`);
+    revalidatePath("/profile/edit");
+
+    return {
+      success: true,
+      data: {
+        user: JSON.parse(JSON.stringify(updatedUser)),
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}

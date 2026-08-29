@@ -143,3 +143,12 @@ interface GlobalSearchResult {
   type: string;
   id: mongoose.Types.ObjectId | string;
 }
+
+interface UpdateUserParams {
+  name: string;
+  username: string;
+  bio?: string;
+  location?: string;
+  image?: string;
+  portfolio?: string;
+}
