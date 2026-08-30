@@ -169,7 +169,9 @@ export const AIAnswerSchema = z.object({
 
 export const CreateVoteSchema = z.object({
   targetId: z.string().min(1, { message: "Target ID is required." }),
-  targetType: z.enum(["question", "answer"], { message: "Invalid target type." }),
+  targetType: z.enum(["question", "answer"], {
+    message: "Invalid target type.",
+  }),
   voteType: z.enum(["upvote", "downvote"], { message: "Invalid vote type." }),
 });
 
@@ -179,7 +181,7 @@ export const UpdateVoteCountSchema = CreateVoteSchema.extend({
 
 export const HasVotedSchema = CreateVoteSchema.pick({
   targetId: true,
-  targetType: true
+  targetType: true,
 });
 
 export const CollectionBaseSchema = z.object({
@@ -195,7 +197,7 @@ export const GetUserQuestionsSchema = PaginatedSearchParamsSchema.extend({
 });
 
 export const GetUserAnswersSchema = PaginatedSearchParamsSchema.extend({
-  userId: z.string().min(1, { message: "User ID is required." })
+  userId: z.string().min(1, { message: "User ID is required." }),
 });
 
 export const GetUsersTagsSchema = z.object({
@@ -213,7 +215,7 @@ export const DeleteAnswerSchema = z.object({
 export const CreateInteractionSchema = z.object({
   action: z.enum(InteractionActionEnums),
   actionTarget: z.enum(["question", "answer"]),
-  actionId: z.string().min(1, { message: "Action ID is required"}),
+  actionId: z.string().min(1, { message: "Action ID is required" }),
   authorId: z.string().min(1, { message: "Author ID is required" }),
 });
 
@@ -224,12 +226,24 @@ export const GlobalSearchSchema = z.object({
 
 export const UpdateUserSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }).max(50),
-  username: z.string().min(3, { message: "Username must be at least 3 characters long." }).max(30).regex(/^[a-zA-Z0-9_-]+$/, {
-    message: "Username can only contain letters, numbers, and underscores.",
-  }),
-  bio: z.string().max(200, { message: "Bio cannot exceed 200 characters" }).optional(),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 3 characters long." })
+    .max(30)
+    .regex(/^[a-zA-Z0-9_-]+$/, {
+      message: "Username can only contain letters, numbers, and underscores.",
+    }),
+  bio: z
+    .string()
+    .max(200, { message: "Bio cannot exceed 200 characters" })
+    .optional(),
   location: z.string().max(50).optional(),
-  image: z.url({ message: "Please provide a valid URL." }).optional(),
-  portfolio: z.url({ message: "Please provide a valid URL."}).optional().or(z.literal("")),
-  email: z.email({ message: "Please provide a valid Email address" }).optional(),
+  image: z.url({ message: "Please provide a valid URL." }).optional().or(z.literal("")),
+  portfolio: z
+    .url({ message: "Please provide a valid URL." })
+    .optional()
+    .or(z.literal("")),
+  email: z
+    .email({ message: "Please provide a valid Email address" })
+    .optional(),
 });

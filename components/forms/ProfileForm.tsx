@@ -9,50 +9,50 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { Button } from "../ui/button";
-import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 interface ProfileFormProps {
-    user: User;
+  user: User;
 }
 
 const ProfileForm = ({ user }: ProfileFormProps) => {
-    const router = useRouter();
-    const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const form = useForm<z.infer<typeof UpdateUserSchema>>({
-        resolver: zodResolver(UpdateUserSchema),
-        defaultValues: {
-            name: user.name,
-            username: user.username,
-            email: user.email || "",
-            bio: user.bio || "",
-            location: user.location || "",
-            portfolio: user.portfolio || "",
-            image: user.image || "",
-        },
-    });
+  const form = useForm<z.infer<typeof UpdateUserSchema>>({
+    resolver: zodResolver(UpdateUserSchema),
+    defaultValues: {
+      name: user.name,
+      username: user.username,
+      email: user.email || "",
+      bio: user.bio || "",
+      location: user.location || "",
+      portfolio: user.portfolio || "",
+      image: user.image || "",
+    },
+  });
 
-    const handleUpdate = async (values: z.infer<typeof UpdateUserSchema>) => {
-        setIsSubmitting(true);
-        try {
-            const res = await updateUser(values);
-            if (res.success) {
-                router.push(`/profile/${user._id}`);
-                router.refresh();
-            }
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+  const handleUpdate = async (values: z.infer<typeof UpdateUserSchema>) => {
+    setIsSubmitting(true);
+    try {
+      const res = await updateUser(values);
+      if (res.success) {
+        router.push(`/profile/${user._id}`);
+        router.refresh();
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-    return (
-    <form onSubmit={form.handleSubmit(handleUpdate)} className="mt-9 flex w-full flex-col gap-9">
+  return (
+    <form
+      onSubmit={form.handleSubmit(handleUpdate)}
+      className="mt-9 flex w-full flex-col gap-9"
+    >
       <Field>
         <FieldLabel>Name *</FieldLabel>
         <Input
@@ -72,6 +72,36 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
         />
         {form.formState.errors.username && (
           <FieldError>{form.formState.errors.username.message}</FieldError>
+        )}
+      </Field>
+
+      <Field>
+        <FieldLabel htmlFor="clear-image">Image</FieldLabel>
+
+        {/* Use the official ButtonGroup! */}
+        <ButtonGroup>
+          <Input
+            id="clear-image"
+            {...form.register("image")}
+            className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-14 border"
+          />
+
+          {/* Use a Button component. It gets its full-height and flush right-corner from ButtonGroup! */}
+          <Button
+            type="button"
+            onClick={() => {
+              form.setValue("image", "");
+              form.clearErrors("image");
+              form.trigger("image");
+            }}
+            className="btn-primary min-h-14 cursor-pointer px-4 text-sm font-medium"
+          >
+            Clear
+          </Button>
+        </ButtonGroup>
+
+        {form.formState.errors.image && (
+          <FieldError>{form.formState.errors.image.message}</FieldError>
         )}
       </Field>
 
@@ -123,20 +153,20 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
         <Button
           type="button"
           onClick={() => router.push(`/profile/${user._id}`)}
-          className="btn-secondary min-h-14 w-full sm:w-fit px-4 text-white cursor-pointer"
+          className="btn-secondary min-h-14 w-full cursor-pointer px-4 text-white sm:w-fit"
         >
           Cancel
         </Button>
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="primary-gradient min-h-14 w-full sm:w-fit px-4 text-white cursor-pointer"
+          className="primary-gradient min-h-14 w-full cursor-pointer px-4 text-white sm:w-fit"
         >
           {isSubmitting ? "Saving..." : "Save"}
         </Button>
       </div>
     </form>
   );
-}
+};
 
 export default ProfileForm;

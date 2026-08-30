@@ -380,6 +380,7 @@ export async function updateUser(
 
     revalidatePath(`/profile/${user?.id}`);
     revalidatePath("/profile/edit");
+    revalidatePath("/", "layout");
 
     return {
       success: true,
