@@ -87,7 +87,7 @@ const TagCard = ({
             className={cn(iconClass, "shrink-0 text-2xl xl:text-xl")}
             aria-hidden="true"
           />
-          <div className="background-light800_dark400 w-fit overflow-hidden rounded-sm px-2 py-1.5 sm:px-4 sm:py-1.5 xl:px-3 xl:py-1">
+          <div className="bg-light-800 dark:bg-dark-800 w-fit overflow-hidden rounded-sm px-2 py-1.5 sm:px-4 sm:py-1.5 xl:px-3 xl:py-1">
             <p className="paragraph-semibold text-dark300_light900 truncate xl:text-sm">
               {name}
             </p>
