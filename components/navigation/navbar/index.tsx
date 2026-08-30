@@ -13,8 +13,9 @@ const Navbar = async () => {
   const dbUser = session?.user?.id ? await User.findById(session.user.id).select("name image").lean() : null;
 
   return (
-    <nav className="flex-between background-light900_dark200 shadow-light-300 fixed z-50 w-full gap-5 p-6 sm:px-12 dark:shadow-none items-center flex">
-      <Link href={"/"} className="flex items-center gap-1">
+    <nav className="leading-none flex-between background-light900_dark200 shadow-light-300 fixed z-50 w-full gap-3 p-6 sm:px-12 dark:shadow-none items-center flex">
+      {/* 1. Logo (Small on mobile) */}
+      <Link href={"/"} className="flex items-center gap-1 shrink-0">
         <Image
           src="/images/site-logo.svg"
           width={23}
@@ -27,17 +28,30 @@ const Navbar = async () => {
         </p>
       </Link>
 
-      <GlobalSearch />
+      {/* 2. Global Search (Shrink to fit on mobile, but stay visible!) */}
+      <div className="w-full max-w-50 sm:max-w-100">
+        <GlobalSearch />
+      </div>
 
-      <div className="flex-between gap-5">
+      {/* 3. Icons (Perfectly sized for mobile) */}
+      <div className="flex-between gap-3 sm:gap-5 shrink-0">
         <Theme />
 
-        {dbUser && <UserAvatar 
-        id={dbUser._id.toString()}
-        name={dbUser.name}
-        imageUrl={dbUser.image} />}
+        {/* Avatar only on desktop */}
+        {dbUser && (
+          <div className="hidden sm:flex">
+            <UserAvatar 
+              id={dbUser._id.toString()}
+              name={dbUser.name}
+              imageUrl={dbUser.image} 
+            />
+          </div>
+        )}
 
-        <MobileNavigation />
+        {/* Hamburger only on mobile */}
+        <div className="sm:hidden">
+          <MobileNavigation />
+        </div>
       </div>
     </nav>
   );
