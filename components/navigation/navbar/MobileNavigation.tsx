@@ -20,14 +20,16 @@ const MobileNavigation = async () => {
 
   return (
     <Sheet>
-      <SheetTrigger className="cursor-pointer" asChild>
-        <Image
-          src="/icons/hamburger.svg"
-          width={32}
-          height={32}
-          alt="Menu"
-          className="invert-colors sm:hidden"
-        />
+      <SheetTrigger asChild>
+        <button className="cursor-pointer" type="button">
+          <Image
+            src="/icons/hamburger.svg"
+            width={32}
+            height={32}
+            alt="Menu"
+            className="invert-colors cursor-pointer sm:hidden"
+          />
+        </button>
       </SheetTrigger>
       <SheetContent
         side="left"
@@ -57,17 +59,19 @@ const MobileNavigation = async () => {
           <div className="flex flex-col gap-3 border-t pt-6">
             {userId ? (
               <SheetClose asChild>
-                <form action={async () => {
-                  'use server';
+                <form
+                  action={async () => {
+                    "use server";
 
-                  await signOut();
-                }}>
-                  <Button type="submit"
-                  className="base-medium w-fit bg-transparent! px-4 py-3">
+                    await signOut();
+                  }}
+                >
+                  <Button
+                    type="submit"
+                    className="base-medium w-fit bg-transparent! px-4 py-3"
+                  >
                     <LogOut className="size-5 text-black dark:text-white" />
-                    <span className="text-dark300_light900">
-                      Logout
-                    </span>
+                    <span className="text-dark300_light900">Logout</span>
                   </Button>
                 </form>
               </SheetClose>
