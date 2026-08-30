@@ -187,7 +187,7 @@ export async function deleteAnswer(
     );
 
     await Interaction.deleteOne({
-      user,
+      user: user?.id,
       actionId: answerId,
       action: "post",
       actionType: "answer",

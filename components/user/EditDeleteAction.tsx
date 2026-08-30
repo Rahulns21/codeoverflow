@@ -37,6 +37,8 @@ const EditDeleteAction = ({ type, itemId }: Props) => {
         description:
           "Your question and it's answers has been deleted successfully.",
       });
+
+      router.refresh();
     } else if (type === "Answer") {
       await deleteAnswer({ answerId: itemId });
 

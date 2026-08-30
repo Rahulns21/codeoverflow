@@ -487,7 +487,7 @@ export async function deleteQuestion(
     await TagQuestion.deleteMany({ question: questionId }).session(session);
 
     await Interaction.deleteOne({
-      user,
+      user: user?.id,
       actionId: questionId,
       action: "post",
       actionType: "question",
