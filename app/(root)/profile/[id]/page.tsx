@@ -164,7 +164,7 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
           defaultValue="top-posts"
           className="flex-2 max-sm:flex max-sm:flex-col max-sm:items-center"
         >
-          <TabsList className="background-light800_dark400 min-h-10.5 p-1 max-sm:w-full max-sm:justify-center">
+          <TabsList className="bg-light-800 dark:bg-dark-400 min-h-10.5 p-1 max-sm:w-full max-sm:justify-center">
             <TabsTrigger value="top-posts" className="tab">
               Top Posts
             </TabsTrigger>
