@@ -7,6 +7,7 @@ import { Toaster } from "sonner";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { ReactNode } from "react";
+import { Analytics } from "@vercel/analytics/next"
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -83,6 +84,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
             disableTransitionOnChange
           >
             {children}
+            <Analytics />
           </ThemeProvider>
           <Toaster />
         </body>
